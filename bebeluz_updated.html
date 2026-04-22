@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para ti, Bebeluz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --beige:      #f5ede0;
+  --beige-dark: #e4d0b8;
+  --cafe:       #7a4f2d;
+  --cafe-light: #a97c50;
+  --cafe-muted: #c4a882;
+  --cream:      #fdf8f2;
+  --text-dark:  #3d2b1a;
+  --text-mid:   #6b4c32;
+  --text-light: #9c7a5a;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--cream);
+  font-family: 'Jost', sans-serif;
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:1000; opacity:0.35;
+}
+
+/* ── SCREENS ── */
+.screen { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:60px 28px; animation: fadeUp .9s ease forwards; }
+.screen.active { display:flex; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SHARED TYPOGRAPHY ── */
+.label {
+  font-family:'Jost',sans-serif;
+  font-size:10px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:16px;
+}
+.display-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(40px,9vw,72px); font-weight:300; line-height:1.1;
+  color:var(--text-dark); text-align:center; margin-bottom:16px;
+}
+.display-title em { font-style:italic; color:var(--cafe); }
+.body-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(17px,3.2vw,22px); font-weight:300; font-style:italic;
+  color:var(--text-mid); line-height:1.85; text-align:center;
+  max-width:480px; margin-bottom:12px;
+}
+.sub-text {
+  font-family:'Jost',sans-serif;
+  font-size:12px; color:var(--text-light); line-height:1.7;
+  text-align:center; max-width:400px; margin-bottom:32px; letter-spacing:.3px;
+}
+.divider {
+  display:flex; align-items:center; gap:14px;
+  width:200px; margin:24px auto;
+}
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--cafe-muted); opacity:.4; }
+.divider span { color:var(--cafe-muted); font-size:13px; }
+
+/* ── BUTTONS ── */
+.btn {
+  border:none; padding:15px 40px;
+  font-family:'Jost',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s ease; position:relative; overflow:hidden;
+}
+.btn-primary { background:var(--cafe); color:var(--cream); }
+.btn-primary::after { content:''; position:absolute; inset:0; background:var(--cafe-light); transform:translateX(-100%); transition:transform .4s ease; }
+.btn-primary:hover::after { transform:translateX(0); }
+.btn-primary span { position:relative; z-index:1; }
+.btn-outline { background:transparent; border:1px solid var(--cafe-muted); color:var(--text-mid); margin-top:12px; }
+.btn-outline:hover { background:var(--cafe); color:var(--cream); border-color:var(--cafe); }
+
+/* ── CORNERS ── */
+.corners-wrap { position:relative; width:100%; max-width:560px; }
+.corner { position:absolute; width:50px; height:50px; border-color:var(--cafe-muted); border-style:solid; opacity:.18; }
+.corner.tl{top:-8px;left:-8px;border-width:1px 0 0 1px}
+.corner.tr{top:-8px;right:-8px;border-width:1px 1px 0 0}
+.corner.bl{bottom:-8px;left:-8px;border-width:0 0 1px 1px}
+.corner.br{bottom:-8px;right:-8px;border-width:0 1px 1px 0}
+
+/* ── FOOTER SIG ── */
+.sig { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--cafe-muted); margin-top:40px; letter-spacing:1px; }
+
+/* ── ORNAMENT ── */
+.ornament { font-size:56px; color:var(--cafe-muted); opacity:.25; margin-bottom:20px; animation:float 4s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+
+/* ── COUNTDOWN ── */
+.countdown-wrap { margin:28px 0 36px; }
+.countdown-label { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:14px; text-align:center; }
+.countdown-row { display:flex; gap:12px; justify-content:center; align-items:flex-start; }
+.cd-unit { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.cd-num { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,7vw,58px); font-weight:300; color:var(--text-dark); line-height:1; min-width:60px; text-align:center; background:white; border:1px solid var(--beige-dark); padding:10px 6px 6px; }
+.cd-lbl { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); }
+.cd-sep { font-family:'Cormorant Garamond',serif; font-size:38px; color:var(--cafe-muted); line-height:1.35; opacity:.5; }
+
+/* ── CANDLE GRID ── */
+.candle-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%; max-width:480px; margin:24px 0 36px; }
+.candle-card { background:white; border:1px solid var(--beige-dark); padding:16px 10px; text-align:center; cursor:pointer; transition:all .25s ease; position:relative; }
+.candle-card:hover { border-color:var(--cafe-muted); box-shadow:0 4px 16px rgba(122,79,45,.1); }
+.candle-card.locked { opacity:.45; cursor:default; pointer-events:none; }
+.candle-card.unlocked { border-color:var(--cafe-muted); }
+.candle-card.active-today { border-color:var(--cafe); box-shadow:0 0 0 2px rgba(122,79,45,.15); }
+.candle-letter { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:400; color:var(--cafe); line-height:1; }
+.candle-card.locked .candle-letter { color:var(--text-light); }
+.candle-num { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); margin-top:4px; }
+.candle-icon { font-size:18px; margin-bottom:4px; }
+.candle-lock { font-size:14px; opacity:.4; }
+
+/* ── CANDLE DETAIL ── */
+.candle-detail { background:white; border:1px solid var(--beige-dark); padding:32px 28px; max-width:440px; width:100%; text-align:center; margin:12px 0 28px; }
+.candle-day-label { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:10px; }
+.candle-big-letter { font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:300; color:var(--cafe); line-height:1; margin-bottom:8px; opacity:.8; }
+.candle-message { font-family:'Cormorant Garamond',serif; font-size:clamp(16px,3vw,20px); font-style:italic; font-weight:300; color:var(--text-dark); line-height:1.85; }
+.candle-clue { margin-top:20px; padding-top:20px; border-top:1px solid var(--beige-dark); }
+.candle-clue-label { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:8px; }
+.candle-clue-text { font-family:'Cormorant Garamond',serif; font-size:clamp(14px,2.5vw,17px); font-style:italic; color:var(--text-mid); line-height:1.7; }
+
+/* ── INTERMEDIATE SCREEN ── */
+.candle-intermediate {
+  background:white; border:1px solid var(--beige-dark);
+  padding:40px 32px; max-width:440px; width:100%;
+  text-align:center; margin:12px 0 28px;
+  position:relative;
+}
+.candle-intermediate::before {
+  content:'';
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:1px; height:32px; background:var(--cafe-muted); opacity:.3;
+  top:-32px;
+}
+.intermediate-night {
+  font-family:'Jost',sans-serif; font-size:10px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--cafe-muted); margin-bottom:20px;
+}
+.intermediate-flame {
+  font-size:48px; margin-bottom:16px;
+  animation: flicker 2.5s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%,100%{transform:scale(1) rotate(-1deg);opacity:1}
+  25%{transform:scale(1.04) rotate(1deg);opacity:.9}
+  50%{transform:scale(.97) rotate(-0.5deg);opacity:.95}
+  75%{transform:scale(1.02) rotate(0.5deg);opacity:.88}
+}
+.intermediate-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,5vw,34px); font-weight:300; color:var(--text-dark);
+  line-height:1.2; margin-bottom:12px;
+}
+.intermediate-title em { font-style:italic; color:var(--cafe); }
+.intermediate-instruction {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(15px,2.8vw,18px); font-style:italic; font-weight:300;
+  color:var(--text-mid); line-height:1.8; margin-bottom:20px;
+}
+.intermediate-divider {
+  width:60px; height:1px; background:var(--cafe-muted);
+  opacity:.3; margin:20px auto;
+}
+.intermediate-sub {
+  font-family:'Jost',sans-serif; font-size:11px; letter-spacing:.5px;
+  color:var(--text-light); line-height:1.7;
+}
+
+/* ── RULES BOX ── */
+.rules-box { background:var(--beige); border:1px solid var(--beige-dark); padding:24px 28px; max-width:440px; width:100%; margin:16px 0 32px; text-align:left; }
+.rules-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:400; color:var(--text-dark); margin-bottom:14px; }
+.rules-list { list-style:none; }
+.rules-list li { font-family:'Jost',sans-serif; font-size:12px; color:var(--text-mid); line-height:1.8; padding-left:16px; position:relative; }
+.rules-list li::before { content:'—'; position:absolute; left:0; color:var(--cafe-muted); }
+.rules-note { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:var(--text-light); margin-top:14px; }
+
+/* ── PHASE CARDS (Detalle 3) ── */
+.phase-list { display:flex; flex-direction:column; gap:14px; width:100%; max-width:480px; margin:20px 0 32px; }
+.phase-card { background:white; border:1px solid var(--beige-dark); padding:20px 24px; position:relative; transition:all .25s ease; }
+.phase-card.unlocked { border-color:var(--cafe-muted); cursor:pointer; }
+.phase-card.unlocked:hover { box-shadow:0 4px 16px rgba(122,79,45,.1); transform:translateY(-1px); }
+.phase-card.locked { opacity:.5; }
+.phase-date { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--text-dark); margin-bottom:4px; }
+.phase-card.locked .phase-date { color:var(--text-light); }
+.phase-hint { font-family:'Jost',sans-serif; font-size:12px; color:var(--text-light); line-height:1.5; }
+.phase-lock { position:absolute; right:18px; top:50%; transform:translateY(-50%); font-size:15px; opacity:.35; }
+
+/* ── PASSWORD SCREEN ── */
+.password-box { background:white; border:1px solid var(--beige-dark); padding:32px 28px; max-width:380px; width:100%; text-align:center; margin:20px 0 28px; }
+.password-input { width:100%; border:1px solid var(--beige-dark); background:var(--cream); padding:14px 16px; font-family:'Jost',sans-serif; font-size:14px; letter-spacing:3px; text-align:center; color:var(--text-dark); outline:none; transition:border .3s; text-transform:uppercase; margin-bottom:12px; }
+.password-input:focus { border-color:var(--cafe-muted); }
+.password-error { font-family:'Jost',sans-serif; font-size:11px; color:#b85c38; letter-spacing:1px; margin-top:8px; min-height:16px; }
+
+/* ── HOME BUTTON ── */
+.btn-home { position:fixed; top:16px; left:16px; background:transparent; border:1px solid var(--cafe-muted); color:var(--text-mid); padding:8px 16px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; z-index:500; transition:all .3s ease; opacity:.6; }
+.btn-home:hover { opacity:1; background:var(--cafe); color:var(--cream); border-color:var(--cafe); }
+.btn-home.hidden { display:none; }
+
+/* ── ADMIN BANNER ── */
+#adminBanner { display:none; position:fixed; top:0; left:0; right:0; background:var(--cafe); color:var(--cream); text-align:center; padding:10px 16px; font-family:'Jost',sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; z-index:9999; }
+#adminBanner button { background:transparent; border:1px solid var(--cream); color:var(--cream); padding:4px 12px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; margin-left:16px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:420px){
+  .candle-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
+  .candle-card{padding:12px 6px;}
+  .candle-letter{font-size:22px;}
+  .cd-num{min-width:48px;font-size:34px;}
+  .countdown-row{gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<button class="btn-home hidden" id="btnHome" onclick="go('s0')">⌂ Inicio</button>
+<div id="adminBanner">— vista administrador — todo desbloqueado — <button onclick="exitAdmin()">Salir</button></div>
+
+<!-- S-WAIT -->
+<div id="s-wait" class="screen" style="display:none;">
+  <div class="ornament">✦</div>
+  <p class="label">Pronto, Bebeluz</p>
+  <h1 class="display-title">Ya casi<br><em>es el momento.</em></h1>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Este espacio todavía no está listo para ti.<br>Pero en muy poco tiempo, lo estará.</p>
+  <p class="sub-text">Espera el mensaje. Cuando llegue, vuelve aquí.</p>
+  <div class="countdown-wrap">
+    <p class="countdown-label">Disponible en</p>
+    <div class="countdown-row">
+      <div class="cd-unit"><div class="cd-num" id="cdw-h">00</div><div class="cd-lbl">horas</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cdw-m">00</div><div class="cd-lbl">min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cdw-s">00</div><div class="cd-lbl">seg</div></div>
+    </div>
+  </div>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S0 — BIENVENIDA -->
+<div id="s0" class="screen" style="display:none;">
+  <div class="ornament">✦</div>
+  <p class="label">Solo para ti</p>
+  <h1 class="display-title">Hola,<br><em>Bebeluz.</em></h1>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Este espacio lo construí para ti.<br>No es un mensaje. Es un camino.</p>
+  <p class="sub-text">Tómate tu tiempo. Cada pantalla tiene algo tuyo.</p>
+  <button class="btn btn-primary" onclick="go('s1')"><span>Entrar →</span></button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S1 — INTRO -->
+<div id="s1" class="screen">
+  <div class="ornament">☕</div>
+  <p class="label">Un cafecito para cortarla</p>
+  <h2 class="display-title">Hay algo<br><em>que te debo.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">El 14 de abril cumplimos un mes.<br>Ese día pasó y yo no llegué con nada en la mano.</p>
+  <p class="body-text">Pero lo que tengo para darte<br>no cabía en un solo día.<br>Así que lo repartí en tres.</p>
+  <p class="sub-text">Tres momentos. Tres veces que quiero que sientas que alguien pensó en ti con cuidado, Bebeluz.</p>
+  <button class="btn btn-primary" onclick="go('s2')"><span>Ver mi primera pista →</span></button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S2 — PISTA 1 -->
+<div id="s2" class="screen">
+  <p class="label">Detalle 1 — Primera pista</p>
+  <h2 class="display-title">Algo que<br><em>se consume</em><br>despacio.</h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">No es para siempre.<br>Pero cada vez que lo uses,<br>va a dejar algo en el aire.</p>
+  <p class="sub-text">Siete veces. Siete noches. Siete mensajes para ti.</p>
+  <button class="btn btn-primary" onclick="go('s3')"><span>Segunda pista →</span></button>
+  <button class="btn btn-outline" onclick="go('s1')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S3 — PISTA 2 -->
+<div id="s3" class="screen">
+  <p class="label">Detalle 1 — Segunda pista</p>
+  <h2 class="display-title">Huele a algo<br><em>que nos gusta</em><br>a los dos.</h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Cada uno de los siete<br>tiene tu nombre escrito.<br>Literalmente.</p>
+  <p class="sub-text">¿Ya tienes idea de qué es, Pirañita?</p>
+  <div class="countdown-wrap">
+    <p class="countdown-label">Lo recibes en</p>
+    <div class="countdown-row">
+      <div class="cd-unit"><div class="cd-num" id="cd1-d">00</div><div class="cd-lbl">días</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd1-h">00</div><div class="cd-lbl">horas</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd1-m">00</div><div class="cd-lbl">min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd1-s">00</div><div class="cd-lbl">seg</div></div>
+    </div>
+  </div>
+  <p class="sub-text">Cuando llegue el momento, te lo entrego en persona.</p>
+  <button class="btn btn-outline" onclick="go('s2')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S4 — REGLAS -->
+<div id="s4" class="screen">
+  <p class="label">Ya las tienes en la mano</p>
+  <h2 class="display-title">Las reglas<br><em>del juego.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <div class="rules-box">
+    <p class="rules-title">Antes de encender la primera:</p>
+    <ul class="rules-list">
+      <li>Una vela por día. No más. (Sí, lo sabré.)</li>
+      <li>Cada noche, antes de apagarla, vuelve aquí y abre la del día.</li>
+      <li>Están en orden. La trampa no existe porque el misterio se rompe.</li>
+      <li>Si enciendes dos en un día, perdemos los dos. Tú el detalle 2, yo el orgullo.</li>
+      <li>El último día hay una sorpresa extra. Pero solo si seguiste las reglas.</li>
+    </ul>
+    <p class="rules-note">*Cláusula Pirañita: si haces trampa, igual te amo. Pero me lo dirás tú sola.*</p>
+  </div>
+  <button class="btn btn-primary" onclick="go('s5')"><span>Ver mis velas →</span></button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S5 — MAPA DE LAS 7 VELAS -->
+<div id="s5" class="screen">
+  <p class="label">Tu acróstico, Bebeluz</p>
+  <h2 class="display-title">Siete letras.<br><em>Siete noches.</em></h2>
+  <p class="sub-text" style="margin-bottom:8px;">Toca la del día de hoy. Las demás esperan su turno.</p>
+  <div class="candle-grid" id="candleGrid"></div>
+  <p class="sub-text">Cada día una nueva pista del próximo detalle.</p>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S5b — CONTRASEÑA DE VELA INDIVIDUAL -->
+<div id="s5b" class="screen">
+  <p class="label" id="candlePwLabel">Noche —</p>
+  <h2 class="display-title">Una palabra<br><em>para esta noche.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="sub-text" id="candlePwHint">Escribe la palabra que te di esta noche.</p>
+  <div class="password-box">
+    <input type="text" class="password-input" id="candlePwInput" placeholder="···" autocomplete="off" />
+    <button class="btn btn-primary" onclick="checkCandlePassword()" style="width:100%"><span>Entrar →</span></button>
+    <p class="password-error" id="candlePwError"></p>
+  </div>
+  <button class="btn btn-outline" onclick="go('s5')">← Volver a mis velas</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S5c — PANTALLA INTERMEDIA (antes del mensaje) -->
+<div id="s5c" class="screen">
+  <div id="intermediateContent"></div>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S6 — VISTA DE VELA INDIVIDUAL (mensaje completo) -->
+<div id="s6" class="screen">
+  <div id="candleContent"></div>
+  <button class="btn btn-outline" onclick="go('s5')" style="margin-top:8px;">← Volver a mis velas</button>
+  <div id="shareZone" style="display:none; margin-top:20px; text-align:center;">
+    <div id="shareText" style="background:var(--beige); border:1px solid var(--beige-dark); padding:16px 20px; max-width:360px; font-family:'Cormorant Garamond',serif; font-size:15px; font-style:italic; color:var(--text-mid); line-height:1.7;"></div>
+  </div>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S7 — CUENTA REGRESIVA DETALLE 2 -->
+<div id="s7" class="screen">
+  <p class="label">Detalle 2 — Ya casi</p>
+  <h2 class="display-title">Algo que<br><em>hace falta</em><br>en tu casa.</h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Siete días. Siete pistas.<br>¿Ya sabes qué es?<br>En unas horas lo vemos juntos.</p>
+  <p class="sub-text">Iremos los cuatro. Tú, yo y los roomies.</p>
+  <div class="countdown-wrap">
+    <p class="countdown-label">Faltan</p>
+    <div class="countdown-row">
+      <div class="cd-unit"><div class="cd-num" id="cd2-d">00</div><div class="cd-lbl">días</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd2-h">00</div><div class="cd-lbl">horas</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd2-m">00</div><div class="cd-lbl">min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd2-s">00</div><div class="cd-lbl">seg</div></div>
+    </div>
+  </div>
+  <button class="btn btn-outline" onclick="go('s5')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S8 — DETALLE 3 -->
+<div id="s8" class="screen">
+  <p class="label">Detalle 3 — El camino sigue</p>
+  <h2 class="display-title">Queda<br><em>una última</em><br>sorpresa.</h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">No es para hoy.<br>Pero ya puedes ir pensando.</p>
+  <p class="sub-text">Tres pistas. Tres fechas. Una sola intención.</p>
+  <div class="phase-list" id="phaseList"></div>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S9 — VISTA DE PISTA DE FASE -->
+<div id="s9" class="screen">
+  <div id="phaseContent"></div>
+  <button class="btn btn-outline" onclick="go('s8')" style="margin-top:16px;">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S10 — CONTRASEÑA GLOBAL (velas + detalle 3) -->
+<div id="s10" class="screen">
+  <p class="label" id="pwLabel">Acceso especial</p>
+  <h2 class="display-title">Una palabra<br><em>que solo tú</em><br>sabes.</h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="sub-text" id="pwHint">Escríbela para continuar.</p>
+  <div class="password-box">
+    <input type="text" class="password-input" id="pwInput" placeholder="···" autocomplete="off" />
+    <button class="btn btn-primary" onclick="checkPassword()" style="width:100%"><span>Entrar →</span></button>
+    <p class="password-error" id="pwError"></p>
+  </div>
+  <button class="btn btn-outline" id="pwBack" onclick="go('s3')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- S11 — DETALLE FINAL -->
+<div id="s11" class="screen">
+  <p class="label">Detalle 3 — 14 de mayo</p>
+  <h2 class="display-title">Para ti,<br><em>Bebeluz.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Hay algo que tú y Mathias<br>van a estrenar juntos esta noche.<br>Suave, cómodo, tuyo.</p>
+  <p class="sub-text">Porque lo más lindo de amarte es amar también lo que tú amas.</p>
+  <div class="countdown-wrap">
+    <p class="countdown-label">Lo recibes en</p>
+    <div class="countdown-row">
+      <div class="cd-unit"><div class="cd-num" id="cd3-d">00</div><div class="cd-lbl">días</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd3-h">00</div><div class="cd-lbl">horas</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd3-m">00</div><div class="cd-lbl">min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd3-s">00</div><div class="cd-lbl">seg</div></div>
+    </div>
+  </div>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIGURACIÓN
+// ═══════════════════════════════════════
+const CONFIG = {
+  unlockAt: new Date('2026-04-22T11:00:00'),
+  pw1: "CAFE",
+  pw2: "PIRANA",
+  target1: new Date('2026-04-24T19:30:00'),
+  target2: new Date('2026-05-01T11:30:00'),
+  target3: new Date('2026-05-14T19:30:00'),
+  candleDates: [
+    new Date('2026-04-24T19:30:00'),
+    new Date('2026-04-25T00:00:00'),
+    new Date('2026-04-26T00:00:00'),
+    new Date('2026-04-27T00:00:00'),
+    new Date('2026-04-28T00:00:00'),
+    new Date('2026-04-29T00:00:00'),
+    new Date('2026-04-30T00:00:00'),
+  ],
+  phaseDates: [
+    new Date('2026-05-02T00:00:00'),
+    new Date('2026-05-09T00:00:00'),
+    new Date('2026-05-12T00:00:00'),
+  ],
+};
+
+// ═══════════════════════════════════════
+// CONTRASEÑAS INDIVIDUALES POR VELA
+// Orden: Noche 1 → 7
+// ═══════════════════════════════════════
+const CANDLE_PASSWORDS = [
+  "CANCHITA",  // Noche 1 — B
+  "UÑAS",      // Noche 2 — E
+  "COLLAR",    // Noche 3 — B
+  "INTENSA",   // Noche 4 — E
+  "MES",       // Noche 5 — L
+  "14",        // Noche 6 — U
+  "MARZO",     // Noche 7 — Z
+];
+
+// ═══════════════════════════════════════
+// PANTALLAS INTERMEDIAS POR VELA
+// ═══════════════════════════════════════
+const intermediateScreens = [
+  {
+    night: "Noche 1 de 7",
+    flame: "🕯️",
+    title: "Ya puedes<br><em>encenderla.</em>",
+    instruction: "Busca un rincón tranquilo.\nEspera a que el cuarto huela a algo.\nEntonces vuelve aquí.",
+    sub: "Tu mensaje te está esperando."
+  },
+  {
+    night: "Noche 2 de 7",
+    flame: "🕯️",
+    title: "El segundo<br><em>ya es tuyo.</em>",
+    instruction: "Enciéndela.\nDeja que el olor llene el cuarto.\nYo estoy ahí, en ese humo.",
+    sub: "Cuando estés lista, abre tu mensaje."
+  },
+  {
+    night: "Noche 3 de 7",
+    flame: "🕯️",
+    title: "La tercera<br><em>huele a nosotros.</em>",
+    instruction: "Ya sabes el ritual.\nLuz, silencio, olor.\nLuego yo.",
+    sub: "Abre cuando el cuarto ya huela."
+  },
+  {
+    night: "Noche 4 de 7",
+    flame: "🕯️",
+    title: "Mitad<br><em>del camino.</em>",
+    instruction: "Cuatro noches adentro.\nTres por venir.\nEsta noche es tuya también.",
+    sub: "Tu mensaje te espera abajo."
+  },
+  {
+    night: "Noche 5 de 7",
+    flame: "🕯️",
+    title: "Ya casi,<br><em>Mi Intensa.</em>",
+    instruction: "Dos más después de esta.\nEnciéndela despacio.\nSaborea el ritual.",
+    sub: "Cuando el olor llegue, baja."
+  },
+  {
+    night: "Noche 6 de 7",
+    flame: "🕯️",
+    title: "La penúltima<br><em>es especial.</em>",
+    instruction: "Mañana es la última.\nPero esta noche también tiene algo tuyo.\nNo te la saltes.",
+    sub: "Lee lo que te dejé."
+  },
+  {
+    night: "Noche 7 — La última",
+    flame: "✨",
+    title: "La última<br><em>y la mejor.</em>",
+    instruction: "Siete noches.\nSiete veces que pensé en ti.\nEsta es la que más me costó escribir.",
+    sub: "Baja cuando estés lista. No hay prisa."
+  }
+];
+
+// ═══════════════════════════════════════
+// VELAS — CONTENIDO
+// ═══════════════════════════════════════
+const candles = [
+  {
+    letter: "B", day: "Noche 1",
+    message: "Buenos días, buenas noches, un café,\nuna historia antes de dormir.\nEso somos. Y me parece mucho.",
+    clue: "Pista 1 de 7: Es algo que existe en muchas casas.\nPero en la tuya, falta."
+  },
+  {
+    letter: "E", day: "Noche 2",
+    message: "Esa historia que te cuento antes de dormir\nno la saqué de ningún libro.\nEs la nuestra. Y tú te la mereces entera.",
+    clue: "Pista 2 de 7: No lo ves cuando no está.\nPero cuando llega, lo notas."
+  },
+  {
+    letter: "B", day: "Noche 3",
+    message: "Bien podría ser cualquier cosa lo que nos une.\nPero resultó ser un café ralo con azúcar.\nY me parece perfecto.",
+    clue: "Pista 3 de 7: No es eléctrico.\nNo hace ruido. Solo está."
+  },
+  {
+    letter: "E", day: "Noche 4",
+    message: "Entre todo lo que ocupa el día,\ntú eres lo que no se me va.\nComo el café de la mañana: inevitable.",
+    clue: "Pista 4 de 7: Puede ser grande o pequeño.\nDepende del espacio que tengas."
+  },
+  {
+    letter: "L", day: "Noche 5",
+    message: "Lo que más me gusta de estar contigo\nes que no tengo que fingir nada.",
+    clue: "Pista 5 de 7: Tú lo has mencionado.\nYo lo escuché. Y lo recordé."
+  },
+  {
+    letter: "U", day: "Noche 6",
+    message: "Un mes no es la historia completa.\nPero ya sé que te elijo a ti\ncomo compañera de vida.",
+    clue: "Pista 6 de 7: Algo que no se compra por capricho.\nSe compra cuando estás lista."
+  },
+  {
+    letter: "Z", day: "Noche 7 — La última",
+    message: "Zarpamos juntos, Mi Intensa.\nY esto recién empieza.",
+    clue: "Última pista: Mañana, los cuatro juntos,\nvamos por eso que hace falta."
+  }
+];
+
+// ═══════════════════════════════════════
+// MENSAJES INDIRECTOS
+// ═══════════════════════════════════════
+const indirectMessages = [
+  "Alguien se acordó de mí hoy. 🤎",
+  "Me contaron una historia antes de dormir. Como si fuera una niña. Y me gustó mucho.",
+  "El café une más de lo que la gente cree.",
+  "Hay personas que te escuchan de verdad. Las reconoces después.",
+  "No sé cómo explicarlo. Solo sé que lo agradezco mucho.",
+  "Un mes. Solo un mes. Y ya parece que es historia.",
+  "Tres detalles. Una sola intención. Y yo aquí, sintiéndome muy amada. 🕯️"
+];
+
+// ═══════════════════════════════════════
+// FASES DETALLE 3
+// ═══════════════════════════════════════
+const phases = [
+  {
+    date: "2 de mayo", label: "Primera pista",
+    message: "Existe en casi todos los hogares.\nEn algunos más de una vez.\nEn el tuyo, uno ya llegó antes.",
+    sub: "Pero este es diferente. Y no viene solo."
+  },
+  {
+    date: "9 de mayo", label: "Segunda pista",
+    message: "No es para lucirlo.\nNo es para mostrarlo.\nEs para disfrutarlo cuando nadie te ve.",
+    sub: "Dos personas lo van a estrenar. Una eres tú."
+  },
+  {
+    date: "12 de mayo", label: "Última pista",
+    message: "Son dos.\nUno en tu talla. Uno en la de alguien\nque te importa mucho.",
+    sub: "El 14 te los llevo. Solo faltan dos días."
+  }
+];
+
+// ═══════════════════════════════════════
+// ESTADO DE VELA ACTIVA
+// ═══════════════════════════════════════
+let activeCandleIndex = -1;
+let pwTarget = 's4';
+
+function normalizeAccents(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+}
+
+// ═══════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const t = document.getElementById(id);
+  t.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('active')));
+  window.scrollTo(0,0);
+  const btnHome = document.getElementById('btnHome');
+  if(btnHome) btnHome.classList.toggle('hidden', id === 's0');
+}
+
+document.querySelectorAll('.screen').forEach(s => {
+  if(!s.classList.contains('active')) s.style.display = 'none';
+});
+
+// ═══════════════════════════════════════
+// CONTRASEÑA GLOBAL (acceso velas + d3)
+// ═══════════════════════════════════════
+function openPassword(target, label, hint, backScreen) {
+  pwTarget = target;
+  document.getElementById('pwLabel').textContent = label;
+  document.getElementById('pwHint').textContent = hint;
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwBack').setAttribute('onclick', `go('${backScreen}')`);
+  go('s10');
+}
+
+function checkPassword() {
+  const raw = document.getElementById('pwInput').value.trim();
+  const val = normalizeAccents(raw);
+  const err = document.getElementById('pwError');
+  if (pwTarget === 's4' && val === normalizeAccents(CONFIG.pw1)) {
+    go('s4');
+  } else if (pwTarget === 's8' && val === normalizeAccents(CONFIG.pw2)) {
+    buildPhaseList();
+    go('s8');
+  } else {
+    err.textContent = 'Esa no es, Pirañita. Piénsalo bien.';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkPassword();
+});
+
+// ═══════════════════════════════════════
+// CONTRASEÑA INDIVIDUAL DE VELA
+// ═══════════════════════════════════════
+function openCandlePassword(index) {
+  activeCandleIndex = index;
+  const nightNum = index + 1;
+  document.getElementById('candlePwLabel').textContent = `Noche ${nightNum} de 7`;
+  document.getElementById('candlePwHint').textContent = `Escribe la palabra que te di esta noche.`;
+  document.getElementById('candlePwInput').value = '';
+  document.getElementById('candlePwError').textContent = '';
+  go('s5b');
+}
+
+function checkCandlePassword() {
+  const raw = document.getElementById('candlePwInput').value.trim();
+  const val = normalizeAccents(raw);
+  const expected = normalizeAccents(CANDLE_PASSWORDS[activeCandleIndex]);
+  const err = document.getElementById('candlePwError');
+
+  if (val === expected) {
+    showIntermediate(activeCandleIndex);
+  } else {
+    err.textContent = 'Esa no es, Pirañita. Piénsalo bien.';
+    document.getElementById('candlePwInput').value = '';
+  }
+}
+
+document.getElementById('candlePwInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkCandlePassword();
+});
+
+// ═══════════════════════════════════════
+// PANTALLA INTERMEDIA
+// ═══════════════════════════════════════
+function showIntermediate(index) {
+  const im = intermediateScreens[index];
+  const content = document.getElementById('intermediateContent');
+
+  content.innerHTML = `
+    <div class="candle-intermediate">
+      <p class="intermediate-night">${im.night}</p>
+      <div class="intermediate-flame">${im.flame}</div>
+      <h2 class="intermediate-title">${im.title}</h2>
+      <div class="intermediate-divider"></div>
+      <p class="intermediate-instruction">${im.instruction.replace(/\n/g,'<br>')}</p>
+      <p class="intermediate-sub">${im.sub}</p>
+    </div>
+    <button class="btn btn-primary" onclick="showCandle(${index})" style="margin-top:8px;">
+      <span>Leer mi mensaje →</span>
+    </button>
+    <button class="btn btn-outline" onclick="go('s5')" style="margin-top:8px;">
+      ← Volver a mis velas
+    </button>
+  `;
+  go('s5c');
+}
+
+// ═══════════════════════════════════════
+// VELAS — GRID
+// ═══════════════════════════════════════
+function buildCandleGrid() {
+  const grid = document.getElementById('candleGrid');
+  const now = new Date();
+  grid.innerHTML = '';
+
+  candles.forEach((c, i) => {
+    const unlocked = now >= CONFIG.candleDates[i];
+    const isToday = i < candles.length - 1
+      ? (now >= CONFIG.candleDates[i] && now < CONFIG.candleDates[i+1])
+      : (now >= CONFIG.candleDates[i]);
+
+    const card = document.createElement('div');
+    card.className = `candle-card ${unlocked ? 'unlocked' : 'locked'} ${isToday ? 'active-today' : ''}`;
+    card.innerHTML = `
+      <div class="candle-icon">${unlocked ? '🕯️' : ''}</div>
+      <div class="candle-letter">${c.letter}</div>
+      <div class="candle-num">${unlocked ? 'Noche '+(i+1) : '🔒'}</div>
+    `;
+    if(unlocked) {
+      card.onclick = () => openCandlePassword(i);
+    }
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════
+// VELAS — MENSAJE COMPLETO
+// ═══════════════════════════════════════
+function showCandle(i) {
+  const c = candles[i];
+  const isLast = i === 6;
+  const content = document.getElementById('candleContent');
+  const shareZone = document.getElementById('shareZone');
+
+  content.innerHTML = `
+    <div class="candle-detail">
+      <p class="candle-day-label">${c.day}</p>
+      <div class="candle-big-letter">${c.letter}</div>
+      <p class="candle-message">${c.message.replace(/\n/g,'<br>')}</p>
+      <div class="candle-clue">
+        <p class="candle-clue-label">Pista del próximo detalle</p>
+        <p class="candle-clue-text">${c.clue.replace(/\n/g,'<br>')}</p>
+      </div>
+    </div>
+  `;
+
+  shareZone.style.display = 'block';
+  shareZone.dataset.candleIndex = i;
+  document.getElementById('shareText').textContent = indirectMessages[i];
+
+  if(isLast) {
+    content.innerHTML += `
+      <div style="text-align:center;margin-top:20px;">
+        <p class="sub-text">¿Lista para ver qué viene?</p>
+        <button class="btn btn-primary" onclick="go('s7')"><span>Ver el siguiente detalle →</span></button>
+      </div>
+    `;
+  }
+
+  go('s6');
+}
+
+// ═══════════════════════════════════════
+// FASES DETALLE 3
+// ═══════════════════════════════════════
+function buildPhaseList() {
+  const list = document.getElementById('phaseList');
+  const now = new Date();
+  list.innerHTML = '';
+  phases.forEach((p, i) => {
+    const unlocked = now >= CONFIG.phaseDates[i];
+    const card = document.createElement('div');
+    card.className = `phase-card ${unlocked ? 'unlocked' : 'locked'}`;
+    card.innerHTML = `
+      <p class="label" style="margin-bottom:4px;">${p.label}</p>
+      <p class="phase-date">${p.date}</p>
+      <p class="phase-hint">${unlocked ? 'Toca para leer tu pista.' : 'Todavía no. Paciencia, Mi Intensa.'}</p>
+      ${!unlocked ? '<span class="phase-lock">🔒</span>' : ''}
+    `;
+    if(unlocked) card.onclick = () => showPhase(i);
+    list.appendChild(card);
+  });
+}
+
+function showPhase(i) {
+  const p = phases[i];
+  const isLast = i === 2;
+  document.getElementById('phaseContent').innerHTML = `
+    <p class="label">${p.label} — ${p.date}</p>
+    <div style="background:white;border:1px solid var(--beige-dark);padding:32px 28px;max-width:440px;width:100%;text-align:center;margin:16px 0;">
+      <p class="body-text" style="margin-bottom:12px;">${p.message.replace(/\n/g,'<br>')}</p>
+      <div class="divider"><span>◇</span></div>
+      <p class="sub-text">${p.sub}</p>
+      ${isLast ? `<div style="margin-top:20px;"><button class="btn btn-primary" onclick="go('s11')"><span>Ver el detalle final →</span></button></div>` : ''}
+    </div>
+  `;
+  go('s9');
+}
+
+// ═══════════════════════════════════════
+// COUNTDOWNS
+// ═══════════════════════════════════════
+function updateCD(target, dId, hId, mId, sId) {
+  const now = new Date();
+  const diff = target - now;
+  if(diff <= 0) {
+    [dId,hId,mId,sId].forEach(id => { const el=document.getElementById(id); if(el) el.textContent='00'; });
+    return;
+  }
+  const d = Math.floor(diff/(1000*60*60*24));
+  const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const m = Math.floor((diff%(1000*60*60))/(1000*60));
+  const s = Math.floor((diff%(1000*60))/1000);
+  const pad = n => String(n).padStart(2,'0');
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=pad(v); };
+  setEl(dId,d); setEl(hId,h); setEl(mId,m); setEl(sId,s);
+}
+
+function tickAll() {
+  updateCD(CONFIG.target1,'cd1-d','cd1-h','cd1-m','cd1-s');
+  updateCD(CONFIG.target2,'cd2-d','cd2-h','cd2-m','cd2-s');
+  updateCD(CONFIG.target3,'cd3-d','cd3-h','cd3-m','cd3-s');
+}
+
+tickAll();
+setInterval(tickAll, 1000);
+
+// ═══════════════════════════════════════
+// MODO ADMINISTRADOR
+// Triple tap en la firma
+// ═══════════════════════════════════════
+let tapCount = 0;
+let tapTimer = null;
+let adminActive = false;
+
+document.querySelectorAll('.sig').forEach(sig => {
+  sig.style.cursor = 'pointer';
+  sig.addEventListener('click', () => {
+    if(adminActive) return;
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+    if(tapCount >= 3) {
+      tapCount = 0;
+      activateAdminMode();
+    }
+  });
+});
+
+function activateAdminMode() {
+  adminActive = true;
+  const past = new Date('2020-01-01');
+  CONFIG.unlockAt = past;
+  CONFIG.candleDates = CONFIG.candleDates.map(() => past);
+  CONFIG.phaseDates  = CONFIG.phaseDates.map(() => past);
+  CONFIG.target1 = past;
+  CONFIG.target2 = past;
+  CONFIG.target3 = past;
+  CONFIG.pw1 = '__ADMIN__';
+  CONFIG.pw2 = '__ADMIN__';
+
+  // En admin: saltar contraseñas de velas directamente a intermedia
+  window._adminMode = true;
+
+  buildCandleGrid();
+  buildPhaseList();
+  document.getElementById('adminBanner').style.display = 'block';
+
+  if(document.getElementById('s-wait').classList.contains('active')) {
+    go('s0');
+  }
+
+  window.checkPassword = function() {
+    if(pwTarget === 's4') { go('s4'); }
+    else { buildPhaseList(); go('s8'); }
+  };
+}
+
+// Parche admin para saltar contraseña de vela
+const _origOpenCandlePassword = openCandlePassword;
+window.openCandlePassword = function(index) {
+  if(window._adminMode) {
+    activeCandleIndex = index;
+    showIntermediate(index);
+  } else {
+    _origOpenCandlePassword(index);
+  }
+};
+
+function exitAdmin() {
+  window.location.reload();
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function updateWaitCD() {
+  const now = new Date();
+  const diff = CONFIG.unlockAt - now;
+  if(diff <= 0) { go('s0'); return; }
+  const h = Math.floor(diff/(1000*60*60));
+  const m = Math.floor((diff%(1000*60*60))/(1000*60));
+  const s = Math.floor((diff%(1000*60))/1000);
+  const pad = n => String(n).padStart(2,'0');
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=pad(v); };
+  setEl('cdw-h',h); setEl('cdw-m',m); setEl('cdw-s',s);
+}
+
+window.addEventListener('load', () => {
+  buildCandleGrid();
+
+  const now = new Date();
+  if(now >= CONFIG.unlockAt) {
+    document.getElementById('s0').classList.add('active');
+    document.getElementById('s0').style.display = 'flex';
+  } else {
+    const sw = document.getElementById('s-wait');
+    sw.style.display = 'flex';
+    sw.classList.add('active');
+    updateWaitCD();
+    const waitInterval = setInterval(() => {
+      const n = new Date();
+      if(n >= CONFIG.unlockAt) {
+        clearInterval(waitInterval);
+        document.querySelectorAll('.screen').forEach(s => {
+          s.classList.remove('active');
+          s.style.display = 'none';
+        });
+        document.getElementById('s0').style.display = 'flex';
+        document.getElementById('s0').classList.add('active');
+      } else {
+        updateWaitCD();
+      }
+    }, 1000);
+  }
+
+  // Botón acceso velas en S3
+  const s3 = document.getElementById('s3');
+  const sig3 = s3.querySelector('.sig');
+  const accessBtn = document.createElement('button');
+  accessBtn.className = 'btn btn-outline';
+  accessBtn.style.marginTop = '8px';
+  accessBtn.innerHTML = '🔐 Ya recibí mis velas';
+  accessBtn.onclick = () => openPassword('s4', 'Acceso a tus velas', 'Escribe la palabra que te di con el paquete.', 's3');
+  s3.insertBefore(accessBtn, sig3);
+
+  // Botón acceso detalle 3 en S7
+  const s7 = document.getElementById('s7');
+  const sig7 = s7.querySelector('.sig');
+  const access3Btn = document.createElement('button');
+  access3Btn.className = 'btn btn-outline';
+  access3Btn.style.marginTop = '8px';
+  access3Btn.innerHTML = '🔐 Acceder al detalle 3';
+  access3Btn.onclick = () => openPassword('s8', 'Detalle 3', 'Escribe la contraseña que te di el 1/05.', 's7');
+  s7.insertBefore(access3Btn, sig7);
+});
+</script>
+</body>
+</html>
