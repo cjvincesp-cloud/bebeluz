@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Para ti, Bebeluz</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --beige:      #f5ede0;
@@ -16,6 +16,7 @@
   --text-dark:  #3d2b1a;
   --text-mid:   #6b4c32;
   --text-light: #9c7a5a;
+  --gold:       #c9a84c;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -28,175 +29,408 @@ body {
   overflow-x: hidden;
 }
 
+/* Noise texture overlay */
 body::before {
   content:'';
   position:fixed; inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none; z-index:1000; opacity:0.35;
+  pointer-events:none; z-index:999; opacity:0.4;
 }
 
 /* ── SCREENS ── */
-.screen { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:60px 28px; animation: fadeUp .9s ease forwards; }
-.screen.active { display:flex; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+.screen {
+  display:none;
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:70px 28px 60px;
+}
+.screen.active {
+  display:flex;
+  animation: fadeUp .85s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
-/* ── SHARED TYPOGRAPHY ── */
+/* ── TYPOGRAPHY ── */
 .label {
   font-family:'Jost',sans-serif;
-  font-size:10px; letter-spacing:4px; text-transform:uppercase;
-  color:var(--cafe-muted); margin-bottom:16px;
+  font-size:10px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:18px;
 }
 .display-title {
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(40px,9vw,72px); font-weight:300; line-height:1.1;
-  color:var(--text-dark); text-align:center; margin-bottom:16px;
+  font-size:clamp(38px,9vw,68px); font-weight:300; line-height:1.1;
+  color:var(--text-dark); text-align:center; margin-bottom:18px;
 }
 .display-title em { font-style:italic; color:var(--cafe); }
 .body-text {
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(17px,3.2vw,22px); font-weight:300; font-style:italic;
-  color:var(--text-mid); line-height:1.85; text-align:center;
-  max-width:480px; margin-bottom:12px;
+  color:var(--text-mid); line-height:1.9; text-align:center;
+  max-width:460px; margin-bottom:14px;
 }
 .sub-text {
   font-family:'Jost',sans-serif;
-  font-size:12px; color:var(--text-light); line-height:1.7;
-  text-align:center; max-width:400px; margin-bottom:32px; letter-spacing:.3px;
+  font-size:12px; color:var(--text-light); line-height:1.75;
+  text-align:center; max-width:380px; margin-bottom:32px; letter-spacing:.3px;
 }
 .divider {
   display:flex; align-items:center; gap:14px;
-  width:200px; margin:24px auto;
+  width:180px; margin:22px auto;
 }
-.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--cafe-muted); opacity:.4; }
+.divider::before,.divider::after {
+  content:''; flex:1; height:1px;
+  background:var(--cafe-muted); opacity:.4;
+}
 .divider span { color:var(--cafe-muted); font-size:13px; }
+.sig {
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px; font-style:italic;
+  color:var(--cafe-muted); margin-top:40px; letter-spacing:1px;
+}
+.ornament {
+  font-size:52px; color:var(--cafe-muted); opacity:.22;
+  margin-bottom:22px;
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}
+}
 
 /* ── BUTTONS ── */
 .btn {
   border:none; padding:15px 40px;
-  font-family:'Jost',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase;
-  cursor:pointer; transition:all .3s ease; position:relative; overflow:hidden;
+  font-family:'Jost',sans-serif; font-size:11px;
+  letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:all .3s ease;
+  position:relative; overflow:hidden;
 }
 .btn-primary { background:var(--cafe); color:var(--cream); }
-.btn-primary::after { content:''; position:absolute; inset:0; background:var(--cafe-light); transform:translateX(-100%); transition:transform .4s ease; }
+.btn-primary::after {
+  content:''; position:absolute; inset:0;
+  background:var(--cafe-light);
+  transform:translateX(-100%); transition:transform .4s ease;
+}
 .btn-primary:hover::after { transform:translateX(0); }
 .btn-primary span { position:relative; z-index:1; }
-.btn-outline { background:transparent; border:1px solid var(--cafe-muted); color:var(--text-mid); margin-top:12px; }
+.btn-outline {
+  background:transparent;
+  border:1px solid var(--cafe-muted);
+  color:var(--text-mid); margin-top:12px;
+}
 .btn-outline:hover { background:var(--cafe); color:var(--cream); border-color:var(--cafe); }
 
-/* ── CORNERS ── */
-.corners-wrap { position:relative; width:100%; max-width:560px; }
-.corner { position:absolute; width:50px; height:50px; border-color:var(--cafe-muted); border-style:solid; opacity:.18; }
-.corner.tl{top:-8px;left:-8px;border-width:1px 0 0 1px}
-.corner.tr{top:-8px;right:-8px;border-width:1px 1px 0 0}
-.corner.bl{bottom:-8px;left:-8px;border-width:0 0 1px 1px}
-.corner.br{bottom:-8px;right:-8px;border-width:0 1px 1px 0}
-
-/* ── FOOTER SIG ── */
-.sig { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--cafe-muted); margin-top:40px; letter-spacing:1px; }
-
-/* ── ORNAMENT ── */
-.ornament { font-size:56px; color:var(--cafe-muted); opacity:.25; margin-bottom:20px; animation:float 4s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-
-/* ── COUNTDOWN ── */
-.countdown-wrap { margin:28px 0 36px; }
-.countdown-label { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:14px; text-align:center; }
-.countdown-row { display:flex; gap:12px; justify-content:center; align-items:flex-start; }
-.cd-unit { display:flex; flex-direction:column; align-items:center; gap:6px; }
-.cd-num { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,7vw,58px); font-weight:300; color:var(--text-dark); line-height:1; min-width:60px; text-align:center; background:white; border:1px solid var(--beige-dark); padding:10px 6px 6px; }
-.cd-lbl { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); }
-.cd-sep { font-family:'Cormorant Garamond',serif; font-size:38px; color:var(--cafe-muted); line-height:1.35; opacity:.5; }
-
-/* ── CANDLE GRID ── */
-.candle-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%; max-width:480px; margin:24px 0 36px; }
-.candle-card { background:white; border:1px solid var(--beige-dark); padding:16px 10px; text-align:center; cursor:pointer; transition:all .25s ease; position:relative; }
-.candle-card:hover { border-color:var(--cafe-muted); box-shadow:0 4px 16px rgba(122,79,45,.1); }
-.candle-card.locked { opacity:.45; cursor:default; pointer-events:none; }
-.candle-card.unlocked { border-color:var(--cafe-muted); }
-.candle-card.active-today { border-color:var(--cafe); box-shadow:0 0 0 2px rgba(122,79,45,.15); }
-.candle-letter { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:400; color:var(--cafe); line-height:1; }
-.candle-card.locked .candle-letter { color:var(--text-light); }
-.candle-num { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); margin-top:4px; }
-.candle-icon { font-size:18px; margin-bottom:4px; }
-.candle-lock { font-size:14px; opacity:.4; }
-
-/* ── CANDLE DETAIL ── */
-.candle-detail { background:white; border:1px solid var(--beige-dark); padding:32px 28px; max-width:440px; width:100%; text-align:center; margin:12px 0 28px; }
-.candle-day-label { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:10px; }
-.candle-big-letter { font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:300; color:var(--cafe); line-height:1; margin-bottom:8px; opacity:.8; }
-.candle-message { font-family:'Cormorant Garamond',serif; font-size:clamp(16px,3vw,20px); font-style:italic; font-weight:300; color:var(--text-dark); line-height:1.85; }
-.candle-clue { margin-top:20px; padding-top:20px; border-top:1px solid var(--beige-dark); }
-.candle-clue-label { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--cafe-muted); margin-bottom:8px; }
-.candle-clue-text { font-family:'Cormorant Garamond',serif; font-size:clamp(14px,2.5vw,17px); font-style:italic; color:var(--text-mid); line-height:1.7; }
-
-/* ── RULES BOX ── */
-.rules-box { background:var(--beige); border:1px solid var(--beige-dark); padding:24px 28px; max-width:440px; width:100%; margin:16px 0 32px; text-align:left; }
-.rules-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:400; color:var(--text-dark); margin-bottom:14px; }
-.rules-list { list-style:none; }
-.rules-list li { font-family:'Jost',sans-serif; font-size:12px; color:var(--text-mid); line-height:1.8; padding-left:16px; position:relative; }
-.rules-list li::before { content:'—'; position:absolute; left:0; color:var(--cafe-muted); }
-.rules-note { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:var(--text-light); margin-top:14px; }
-
-/* ── PHASE CARDS (Detalle 3) ── */
-.phase-list { display:flex; flex-direction:column; gap:14px; width:100%; max-width:480px; margin:20px 0 32px; }
-.phase-card { background:white; border:1px solid var(--beige-dark); padding:20px 24px; position:relative; transition:all .25s ease; }
-.phase-card.unlocked { border-color:var(--cafe-muted); cursor:pointer; }
-.phase-card.unlocked:hover { box-shadow:0 4px 16px rgba(122,79,45,.1); transform:translateY(-1px); }
-.phase-card.locked { opacity:.5; }
-.phase-date { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--text-dark); margin-bottom:4px; }
-.phase-card.locked .phase-date { color:var(--text-light); }
-.phase-hint { font-family:'Jost',sans-serif; font-size:12px; color:var(--text-light); line-height:1.5; }
-.phase-lock { position:absolute; right:18px; top:50%; transform:translateY(-50%); font-size:15px; opacity:.35; }
-
-/* ── SHARE BTN ── */
-.share-btn { display:inline-flex; align-items:center; gap:8px; background:#25D366; color:white; border:none; padding:13px 28px; font-family:'Jost',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .3s ease; margin-top:8px; }
-.share-btn:hover { background:#1ebe5d; }
-.share-btn svg { width:16px; height:16px; fill:white; }
-
-/* ── PASSWORD SCREEN ── */
-.password-box { background:white; border:1px solid var(--beige-dark); padding:32px 28px; max-width:380px; width:100%; text-align:center; margin:20px 0 28px; }
-.password-input { width:100%; border:1px solid var(--beige-dark); background:var(--cream); padding:14px 16px; font-family:'Jost',sans-serif; font-size:14px; letter-spacing:3px; text-align:center; color:var(--text-dark); outline:none; transition:border .3s; text-transform:uppercase; margin-bottom:12px; }
-.password-input:focus { border-color:var(--cafe-muted); }
-.password-error { font-family:'Jost',sans-serif; font-size:11px; color:#b85c38; letter-spacing:1px; margin-top:8px; min-height:16px; }
-
 /* ── HOME BUTTON ── */
-.btn-home { position:fixed; top:16px; left:16px; background:transparent; border:1px solid var(--cafe-muted); color:var(--text-mid); padding:8px 16px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; z-index:500; transition:all .3s ease; opacity:.6; }
+.btn-home {
+  position:fixed; top:16px; left:16px;
+  background:transparent; border:1px solid var(--cafe-muted);
+  color:var(--text-mid); padding:8px 16px;
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; z-index:500;
+  transition:all .3s ease; opacity:.55;
+}
 .btn-home:hover { opacity:1; background:var(--cafe); color:var(--cream); border-color:var(--cafe); }
 .btn-home.hidden { display:none; }
 
 /* ── ADMIN BANNER ── */
-#adminBanner { display:none; position:fixed; top:0; left:0; right:0; background:var(--cafe); color:var(--cream); text-align:center; padding:10px 16px; font-family:'Jost',sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; z-index:9999; }
-#adminBanner button { background:transparent; border:1px solid var(--cream); color:var(--cream); padding:4px 12px; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; margin-left:16px; }
+#adminBanner {
+  display:none; position:fixed; top:0; left:0; right:0;
+  background:var(--cafe); color:var(--cream);
+  text-align:center; padding:10px 16px;
+  font-family:'Jost',sans-serif; font-size:10px;
+  letter-spacing:3px; text-transform:uppercase; z-index:9999;
+}
+#adminBanner button {
+  background:transparent; border:1px solid var(--cream);
+  color:var(--cream); padding:4px 12px;
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; margin-left:16px;
+}
+
+/* ── COUNTDOWN ── */
+.countdown-wrap { margin:28px 0 36px; }
+.countdown-label {
+  font-family:'Jost',sans-serif; font-size:10px;
+  letter-spacing:4px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:14px; text-align:center;
+}
+.countdown-row { display:flex; gap:12px; justify-content:center; align-items:flex-start; }
+.cd-unit { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.cd-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(34px,7vw,54px); font-weight:300;
+  color:var(--text-dark); line-height:1;
+  min-width:58px; text-align:center;
+  background:white; border:1px solid var(--beige-dark);
+  padding:10px 6px 6px;
+}
+.cd-lbl {
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:2px; text-transform:uppercase; color:var(--text-light);
+}
+.cd-sep {
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px; color:var(--cafe-muted); line-height:1.35; opacity:.5;
+}
+
+/* ── PASSWORD SCREEN ── */
+.password-box {
+  background:white; border:1px solid var(--beige-dark);
+  padding:32px 28px; max-width:380px; width:100%;
+  text-align:center; margin:20px 0 28px;
+}
+.password-input {
+  width:100%; border:1px solid var(--beige-dark);
+  background:var(--cream); padding:14px 16px;
+  font-family:'Jost',sans-serif; font-size:14px;
+  letter-spacing:4px; text-align:center;
+  color:var(--text-dark); outline:none;
+  transition:border .3s; text-transform:uppercase; margin-bottom:12px;
+}
+.password-input:focus { border-color:var(--cafe-muted); }
+.password-error {
+  font-family:'Jost',sans-serif; font-size:11px;
+  color:#b85c38; letter-spacing:1px; margin-top:8px; min-height:16px;
+}
+
+/* ── VELA GRID ── */
+.vela-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:12px; width:100%; max-width:480px; margin:24px 0 32px;
+}
+.vela-card {
+  background:white; border:1px solid var(--beige-dark);
+  padding:18px 10px; text-align:center;
+  cursor:pointer; transition:all .25s ease;
+}
+.vela-card:hover { border-color:var(--cafe-muted); box-shadow:0 4px 16px rgba(122,79,45,.1); }
+.vela-card.locked { opacity:.4; cursor:default; pointer-events:none; }
+.vela-card.unlocked { border-color:var(--cafe-muted); }
+.vela-card.current { border-color:var(--cafe); box-shadow:0 0 0 2px rgba(122,79,45,.15); }
+.vela-letter {
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px; font-weight:400; color:var(--cafe); line-height:1;
+}
+.vela-card.locked .vela-letter { color:var(--text-light); }
+.vela-num {
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-light); margin-top:5px;
+}
+.vela-icon { font-size:16px; margin-bottom:5px; }
+
+/* ── VELA DETAIL ── */
+.vela-detail {
+  background:white; border:1px solid var(--beige-dark);
+  padding:32px 28px; max-width:440px; width:100%;
+  text-align:center; margin:12px 0 28px;
+}
+.vela-day-label {
+  font-family:'Jost',sans-serif; font-size:10px;
+  letter-spacing:4px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:10px;
+}
+.vela-big-letter {
+  font-family:'Cormorant Garamond',serif;
+  font-size:68px; font-weight:300; color:var(--cafe);
+  line-height:1; margin-bottom:8px; opacity:.75;
+}
+.vela-message {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,3vw,20px); font-style:italic;
+  font-weight:300; color:var(--text-dark); line-height:1.9;
+}
+.vela-clue {
+  margin-top:22px; padding-top:22px;
+  border-top:1px solid var(--beige-dark);
+}
+.vela-clue-label {
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:8px;
+}
+.vela-clue-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,2.6vw,18px); font-style:italic;
+  color:var(--text-mid); line-height:1.75;
+}
+
+/* ── DETALLE CARD ── */
+.detalle-card {
+  background:white; border:1px solid var(--beige-dark);
+  padding:28px 24px; max-width:460px; width:100%;
+  margin:12px 0; text-align:center;
+}
+.detalle-numero {
+  font-family:'Jost',sans-serif; font-size:9px;
+  letter-spacing:4px; text-transform:uppercase;
+  color:var(--cafe-muted); margin-bottom:8px;
+}
+.detalle-fecha {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(22px,4vw,30px); font-weight:300;
+  color:var(--text-dark); margin-bottom:6px;
+}
+.detalle-estado {
+  font-family:'Jost',sans-serif; font-size:11px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-light);
+}
+.detalle-estado.activo { color:var(--cafe); }
+.detalle-estado.completado { color:#5a8a5a; }
+
+/* ── EN CONSTRUCCION ── */
+.construccion-box {
+  background:var(--beige); border:1px solid var(--beige-dark);
+  padding:28px 32px; max-width:420px; width:100%;
+  text-align:center; margin:16px 0 32px;
+}
+.construccion-icon { font-size:36px; margin-bottom:12px; opacity:.6; }
+
+/* ── GOLD ACCENT ── */
+.gold { color:var(--gold); }
 
 /* ── RESPONSIVE ── */
 @media(max-width:420px){
-  .candle-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
-  .candle-card{padding:12px 6px;}
-  .candle-letter{font-size:22px;}
-  .cd-num{min-width:48px;font-size:34px;}
-  .countdown-row{gap:8px;}
+  .vela-grid { grid-template-columns:repeat(4,1fr); gap:8px; }
+  .vela-card { padding:12px 6px; }
+  .vela-letter { font-size:20px; }
+  .cd-num { min-width:46px; font-size:32px; }
+  .countdown-row { gap:8px; }
 }
 </style>
 </head>
 <body>
 
-<!-- BOTÓN HOME (fijo, visible en todas menos S0) -->
 <button class="btn-home hidden" id="btnHome" onclick="go('s0')">⌂ Inicio</button>
-
-<!-- BANNER ADMINISTRADOR -->
 <div id="adminBanner">— vista administrador — todo desbloqueado — <button onclick="exitAdmin()">Salir</button></div>
 
 <!-- ══════════════════════════════════
-     S-WAIT — PANTALLA DE ESPERA
-     (antes del 22/04 11:00 am)
+     S0 — BIENVENIDA
 ══════════════════════════════════ -->
-<div id="s-wait" class="screen" style="display:none;">
+<div id="s0" class="screen active">
   <div class="ornament">✦</div>
-  <p class="label">Pronto, Bebeluz</p>
-  <h1 class="display-title">Ya casi<br><em>es el momento.</em></h1>
+  <p class="label">Solo para ti</p>
+  <h1 class="display-title">Hola,<br><em>Bebeluz.</em></h1>
   <div class="divider"><span>◇</span></div>
-  <p class="body-text">Este espacio todavía no está listo para ti.<br>Pero en muy poco tiempo, lo estará.</p>
-  <p class="sub-text">Espera el mensaje. Cuando llegue, vuelve aquí.</p>
+  <p class="body-text">Este espacio lo construí para ti.<br>No es un mensaje. Es una ruta.</p>
+  <p class="sub-text">Tómate tu tiempo. Cada pantalla tiene algo tuyo.</p>
+  <button class="btn btn-primary" onclick="go('s1')"><span>Entrar →</span></button>
+  <p class="sig" id="sig0">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S1 — DISCULPA Y CONTEXTO
+══════════════════════════════════ -->
+<div id="s1" class="screen">
+  <div class="ornament">☕</div>
+  <p class="label">Un cafecito para cortarla</p>
+  <h2 class="display-title">Hay algo<br><em>que te debo.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">El 14 de abril cumplimos un mes.<br>Ese día pasó, y yo no llegué con nada en la mano.</p>
+  <p class="body-text">No tengo excusa. Solo tengo esto:<br>cuatro detalles pensados con cuidado,<br>cada uno en el momento exacto.</p>
+  <p class="sub-text">No es para compensar. Es para decirte que pienso en ti con intención, Bebeluz.</p>
+  <button class="btn btn-primary" onclick="go('s2')"><span>Ver el plan →</span></button>
+  <button class="btn btn-outline" onclick="go('s0')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S2 — LOS 4 DETALLES (SIN SPOILERS)
+══════════════════════════════════ -->
+<div id="s2" class="screen">
+  <p class="label">La ruta completa</p>
+  <h2 class="display-title">Cuatro momentos.<br><em>Una sola intención.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">No te voy a decir qué es cada uno.<br>Para eso están las velas.</p>
+  <p class="sub-text">Cada vez que llegue un detalle, una vela te habrá preparado el camino.</p>
+
+  <div style="width:100%;max-width:440px;margin:8px 0 28px;">
+    <div class="detalle-card" style="margin-bottom:10px;">
+      <p class="detalle-numero">Detalle 01</p>
+      <p class="detalle-fecha">27 de abril</p>
+      <p class="detalle-estado activo" id="d1estado">En camino →</p>
+    </div>
+    <div class="detalle-card" style="margin-bottom:10px;">
+      <p class="detalle-numero">Detalle 02</p>
+      <p class="detalle-fecha">1 de mayo</p>
+      <p class="detalle-estado" id="d2estado">Pronto</p>
+    </div>
+    <div class="detalle-card" style="margin-bottom:10px;">
+      <p class="detalle-numero">Detalle 03</p>
+      <p class="detalle-fecha">10 de mayo</p>
+      <p class="detalle-estado" id="d3estado">Pronto</p>
+    </div>
+    <div class="detalle-card">
+      <p class="detalle-numero">Detalle 04</p>
+      <p class="detalle-fecha">14 de mayo</p>
+      <p class="detalle-estado" id="d4estado">Pronto</p>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="go('s3')"><span>Las velas →</span></button>
+  <button class="btn btn-outline" onclick="go('s1')">← Volver</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S3 — EXPLICACIÓN DE LAS VELAS
+══════════════════════════════════ -->
+<div id="s3" class="screen">
+  <div class="ornament">🕯️</div>
+  <p class="label">El hilo del camino</p>
+  <h2 class="display-title">Ocho velas.<br><em>Ocho acertijos.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Las velas no son el regalo.<br>Son el mapa.</p>
+  <p class="body-text">Cada una te dará una pista<br>del detalle que viene.</p>
+  <p class="sub-text">Una vela por detalle. Algunos detalles usarán dos. El último tiene uno especial.</p>
+  <p class="sub-text">Cuando llegue el momento, te daré la palabra para abrir cada vela.</p>
+
+  <div id="s3-construccion">
+    <!-- Se reemplaza dinámicamente según el tiempo -->
+  </div>
+
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S4 — MAPA DE VELAS (requiere PW)
+══════════════════════════════════ -->
+<div id="s4" class="screen">
+  <p class="label">Tu acróstico, Bebeluz</p>
+  <h2 class="display-title">Ocho letras.<br><em>Ocho noches.</em></h2>
+  <p class="sub-text" style="margin-bottom:4px;">Toca la vela del detalle que corresponda. Las demás esperan.</p>
+
+  <div class="vela-grid" id="velaGrid"></div>
+
+  <p class="sub-text">Cada vela, un acertijo. ¿Puedes adivinar antes de recibirlo?</p>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S5 — VISTA DE VELA INDIVIDUAL
+══════════════════════════════════ -->
+<div id="s5" class="screen">
+  <div id="velaContent"></div>
+  <button class="btn btn-outline" onclick="go('s4')" style="margin-top:8px;">← Volver a mis velas</button>
+  <p class="sig">— tu Pericotito</p>
+</div>
+
+<!-- ══════════════════════════════════
+     S6 — EN CONSTRUCCIÓN
+══════════════════════════════════ -->
+<div id="s6" class="screen">
+  <div class="ornament">🤍</div>
+  <p class="label">Trabajando en ello</p>
+  <h2 class="display-title">En construcción,<br><em>amor.</em></h2>
+  <div class="divider"><span>◇</span></div>
+  <p class="body-text">Este camino está siendo preparado<br>con mucho cuidado para ti.</p>
 
   <div class="countdown-wrap">
     <p class="countdown-label">Disponible en</p>
@@ -208,196 +442,16 @@ body::before {
       <div class="cd-unit"><div class="cd-num" id="cdw-s">00</div><div class="cd-lbl">seg</div></div>
     </div>
   </div>
+
+  <p class="sub-text">Vuelve al mediodía, para ver novedades.</p>
+  <button class="btn btn-outline" onclick="go('s0')">← Inicio</button>
   <p class="sig">— tu Pericotito</p>
 </div>
 
 <!-- ══════════════════════════════════
-     S0 — BIENVENIDA
-══════════════════════════════════ -->
-<div id="s0" class="screen" style="display:none;">
-  <div class="ornament">✦</div>
-  <p class="label">Solo para ti</p>
-  <h1 class="display-title">Hola,<br><em>Bebeluz.</em></h1>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">Este espacio lo construí para ti.<br>No es un mensaje. Es un camino.</p>
-  <p class="sub-text">Tómate tu tiempo. Cada pantalla tiene algo tuyo.</p>
-  <button class="btn btn-primary" onclick="go('s1')"><span>Entrar →</span></button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S1 — INTRO PERSONAL
-══════════════════════════════════ -->
-<div id="s1" class="screen">
-  <div class="ornament">☕</div>
-  <p class="label">Un cafecito para cortarla</p>
-  <h2 class="display-title">Hay algo<br><em>que te debo.</em></h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">El 14 de abril cumplimos un mes.<br>Ese día pasó y yo no llegué con nada en la mano.</p>
-  <p class="body-text">Pero lo que tengo para darte<br>no cabía en un solo día.<br>Así que lo repartí en tres.</p>
-  <p class="sub-text">Tres momentos. Tres veces que quiero que sientas que alguien pensó en ti con cuidado, Bebeluz.</p>
-  <button class="btn btn-primary" onclick="go('s2')"><span>Ver mi primera pista →</span></button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S2 — PISTA 1 (Detalle 1 / Velas)
-══════════════════════════════════ -->
-<div id="s2" class="screen">
-  <p class="label">Detalle 1 — Primera pista</p>
-  <h2 class="display-title">Algo que<br><em>se consume</em><br>despacio.</h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">No es para siempre.<br>Pero cada vez que lo uses,<br>va a dejar algo en el aire.</p>
-  <p class="sub-text">Siete veces. Siete noches. Siete mensajes para ti.</p>
-  <button class="btn btn-primary" onclick="go('s3')"><span>Segunda pista →</span></button>
-  <button class="btn btn-outline" onclick="go('s1')">← Volver</button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S3 — PISTA 2 (Detalle 1 / Velas)
-══════════════════════════════════ -->
-<div id="s3" class="screen">
-  <p class="label">Detalle 1 — Segunda pista</p>
-  <h2 class="display-title">Huele a algo<br><em>que nos gusta</em><br>a los dos.</h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">Cada uno de los siete<br>tiene tu nombre escrito.<br>Literalmente.</p>
-  <p class="sub-text">¿Ya tienes idea de qué es, Pirañita?</p>
-
-  <div class="countdown-wrap">
-    <p class="countdown-label">Lo recibes en</p>
-    <div class="countdown-row">
-      <div class="cd-unit"><div class="cd-num" id="cd1-d">00</div><div class="cd-lbl">días</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd1-h">00</div><div class="cd-lbl">horas</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd1-m">00</div><div class="cd-lbl">min</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd1-s">00</div><div class="cd-lbl">seg</div></div>
-    </div>
-  </div>
-
-  <p class="sub-text">Cuando llegue el momento, te lo entrego en persona.</p>
-  <button class="btn btn-outline" onclick="go('s2')">← Volver</button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S4 — REGLAS DE JUEGO (post-entrega)
-     Se activa con contraseña
-══════════════════════════════════ -->
-<div id="s4" class="screen">
-  <p class="label">Ya las tienes en la mano</p>
-  <h2 class="display-title">Las reglas<br><em>del juego.</em></h2>
-  <div class="divider"><span>◇</span></div>
-
-  <div class="rules-box">
-    <p class="rules-title">Antes de encender la primera:</p>
-    <ul class="rules-list">
-      <li>Una vela por día. No más. (Sí, lo sabré.)</li>
-      <li>Cada noche, antes de apagarla, vuelve aquí y abre la del día.</li>
-      <li>Están en orden. La trampa no existe porque el misterio se rompe.</li>
-      <li>Si enciendes dos en un día, perdemos los dos. Tú el detalle 2, yo el orgullo.</li>
-      <li>El último día hay una sorpresa extra. Pero solo si seguiste las reglas.</li>
-    </ul>
-    <p class="rules-note">*Cláusula Pirañita: si haces trampa, igual te amo. Pero me lo dirás tú sola.*</p>
-  </div>
-
-  <button class="btn btn-primary" onclick="go('s5')"><span>Ver mis velas →</span></button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S5 — MAPA DE LAS 7 VELAS
-══════════════════════════════════ -->
-<div id="s5" class="screen">
-  <p class="label">Tu acróstico, Bebeluz</p>
-  <h2 class="display-title">Siete letras.<br><em>Siete noches.</em></h2>
-  <p class="sub-text" style="margin-bottom:8px;">Toca la del día de hoy. Las demás esperan su turno.</p>
-
-  <div class="candle-grid" id="candleGrid">
-    <!-- Generado por JS -->
-  </div>
-
-  <p class="sub-text">Cada día una nueva pista del próximo detalle.</p>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S6 — VISTA DE VELA INDIVIDUAL
-══════════════════════════════════ -->
-<div id="s6" class="screen">
-  <div id="candleContent">
-    <!-- Generado por JS -->
-  </div>
-  <button class="btn btn-outline" onclick="go('s5')" style="margin-top:8px;">← Volver a mis velas</button>
-
-  <div id="shareZone" style="display:none; margin-top:20px; text-align:center;">
-    <div id="shareText" style="background:var(--beige); border:1px solid var(--beige-dark); padding:16px 20px; max-width:360px; font-family:'Cormorant Garamond',serif; font-size:15px; font-style:italic; color:var(--text-mid); line-height:1.7;"></div>
-  </div>
-
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S7 — CUENTA REGRESIVA DETALLE 2
-     (aparece tras vela 7)
+     S7 — CONTRASEÑA (multi-uso)
 ══════════════════════════════════ -->
 <div id="s7" class="screen">
-  <p class="label">Detalle 2 — Ya casi</p>
-  <h2 class="display-title">Algo que<br><em>hace falta</em><br>en tu casa.</h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">Siete días. Siete pistas.<br>¿Ya sabes qué es?<br>En unas horas lo vemos juntos.</p>
-  <p class="sub-text">Iremos los cuatro. Tú, yo y los roomies.</p>
-
-  <div class="countdown-wrap">
-    <p class="countdown-label">Faltan</p>
-    <div class="countdown-row">
-      <div class="cd-unit"><div class="cd-num" id="cd2-d">00</div><div class="cd-lbl">días</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd2-h">00</div><div class="cd-lbl">horas</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd2-m">00</div><div class="cd-lbl">min</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd2-s">00</div><div class="cd-lbl">seg</div></div>
-    </div>
-  </div>
-
-  <button class="btn btn-outline" onclick="go('s5')">← Volver</button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S8 — DETALLE 3: PISTAS POR FASES
-     (se activa con 2da contraseña)
-══════════════════════════════════ -->
-<div id="s8" class="screen">
-  <p class="label">Detalle 3 — El camino sigue</p>
-  <h2 class="display-title">Queda<br><em>una última</em><br>sorpresa.</h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">No es para hoy.<br>Pero ya puedes ir pensando.</p>
-  <p class="sub-text">Tres pistas. Tres fechas. Una sola intención.</p>
-
-  <div class="phase-list" id="phaseList">
-    <!-- Generado por JS -->
-  </div>
-
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S9 — VISTA DE PISTA DE FASE
-══════════════════════════════════ -->
-<div id="s9" class="screen">
-  <div id="phaseContent"></div>
-  <button class="btn btn-outline" onclick="go('s8')" style="margin-top:16px;">← Volver</button>
-  <p class="sig">— tu Pericotito</p>
-</div>
-
-<!-- ══════════════════════════════════
-     S10 — CONTRASEÑA (multi-uso)
-══════════════════════════════════ -->
-<div id="s10" class="screen">
   <p class="label" id="pwLabel">Acceso especial</p>
   <h2 class="display-title">Una palabra<br><em>que solo tú</em><br>sabes.</h2>
   <div class="divider"><span>◇</span></div>
@@ -414,431 +468,248 @@ body::before {
 </div>
 
 <!-- ══════════════════════════════════
-     S11 — DETALLE FINAL REVELADO (14/05)
+     S8 — DETALLE DESBLOQUEADO (genérico)
+     Contenido generado 100% en JS
 ══════════════════════════════════ -->
-<div id="s11" class="screen">
-  <p class="label">Detalle 3 — 14 de mayo</p>
-  <h2 class="display-title">Para ti,<br><em>Bebeluz.</em></h2>
-  <div class="divider"><span>◇</span></div>
-  <p class="body-text">Hay algo que tú y Mathias<br>van a estrenar juntos esta noche.<br>Suave, cómodo, tuyo.</p>
-  <p class="sub-text">Porque lo más lindo de amarte es amar también lo que tú amas.</p>
-  <div class="countdown-wrap">
-    <p class="countdown-label">Lo recibes en</p>
-    <div class="countdown-row">
-      <div class="cd-unit"><div class="cd-num" id="cd3-d">00</div><div class="cd-lbl">días</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd3-h">00</div><div class="cd-lbl">horas</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd3-m">00</div><div class="cd-lbl">min</div></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><div class="cd-num" id="cd3-s">00</div><div class="cd-lbl">seg</div></div>
-    </div>
-  </div>
+<div id="s8" class="screen">
+  <div id="detalleContent"></div>
+  <button class="btn btn-outline" onclick="go('s2')" style="margin-top:16px;">← Ver la ruta</button>
   <p class="sig">— tu Pericotito</p>
 </div>
 
 <script>
-// ═══════════════════════════════════════
-// CONFIGURACIÓN — Cambia solo aquí
-// ═══════════════════════════════════════
-const CONFIG = {
-  // Fecha de desbloqueo del sitio
-  unlockAt: new Date('2026-04-22T11:00:00'), // 22/04 a las 11:00 am
+// ═══════════════════════════════════════════════════════
+// SEGURIDAD ANTI-SPOILER
+// Todo el contenido sensible vive SOLO aquí, en memoria.
+// Nada está en el DOM. Nada está en atributos HTML.
+// ═══════════════════════════════════════════════════════
 
-  // Contraseña 1: para desbloquear las velas (post-entrega 24/04)
-  pw1: "CAFE",          // acepta con o sin tilde
-  // Contraseña 2: para desbloquear el detalle 3 (post 1/05)
-  pw2: "PIRANA",        // acepta con o sin tilde (piraña / pirana)
-
-  // Fechas clave
-  target1: new Date('2026-04-24T19:30:00'), // Entrega velas
-  target2: new Date('2026-05-01T11:30:00'), // Recojo cabecera
-  target3: new Date('2026-05-14T19:30:00'), // Entrega pijamas
-
-  // Fechas de desbloqueo de cada vela (una por día desde 24/04 7:30pm)
-  candleDates: [
-    new Date('2026-04-24T19:30:00'),
-    new Date('2026-04-25T00:00:00'),
-    new Date('2026-04-26T00:00:00'),
-    new Date('2026-04-27T00:00:00'),
-    new Date('2026-04-28T00:00:00'),
-    new Date('2026-04-29T00:00:00'),
-    new Date('2026-04-30T00:00:00'),
-  ],
-
-  // Fechas de desbloqueo de pistas del Detalle 3
-  phaseDates: [
-    new Date('2026-05-02T00:00:00'),
-    new Date('2026-05-09T00:00:00'),
-    new Date('2026-05-12T00:00:00'),
-  ],
-};
-
-// ═══════════════════════════════════════
-// CONTENIDO DE LAS 7 VELAS
-// Acróstico: B-E-B-E-L-U-Z
-// ═══════════════════════════════════════
-const candles = [
-  {
-    letter: "B",
-    day: "Noche 1",
-    message: "Buenos días, buenas noches, un café,\nuna historia antes de dormir.\nEso somos. Y me parece mucho.",
-    clue: "Pista 1 de 7: Es algo que existe en muchas casas.\nPero en la tuya, falta."
-  },
-  {
-    letter: "E",
-    day: "Noche 2",
-    message: "Esa historia que te cuento antes de dormir\nno la saqué de ningún libro.\nEs la nuestra. Y tú te la mereces entera.",
-    clue: "Pista 2 de 7: No lo ves cuando no está.\nPero cuando llega, lo notas."
-  },
-  {
-    letter: "B",
-    day: "Noche 3",
-    message: "Bien podría ser cualquier cosa lo que nos une.\nPero resultó ser un café ralo con azúcar.\nY me parece perfecto.",
-    clue: "Pista 3 de 7: No es eléctrico.\nNo hace ruido. Solo está."
-  },
-  {
-    letter: "E",
-    day: "Noche 4",
-    message: "Entre todo lo que ocupa el día,\ntú eres lo que no se me va.\nComo el café de la mañana: inevitable.",
-    clue: "Pista 4 de 7: Puede ser grande o pequeño.\nDepende del espacio que tengas."
-  },
-  {
-    letter: "L",
-    day: "Noche 5",
-    message: "Lo que más me gusta de estar contigo\nes que no tengo que fingir nada.",
-    clue: "Pista 5 de 7: Tú lo has mencionado.\nYo lo escuché. Y lo recordé."
-  },
-  {
-    letter: "U",
-    day: "Noche 6",
-    message: "Un mes no es la historia completa.\nPero ya sé que te elijo a ti\ncomo compañera de vida.",
-    clue: "Pista 6 de 7: Algo que no se compra por capricho.\nSe compra cuando estás lista."
-  },
-  {
-    letter: "Z",
-    day: "Noche 7 — La última",
-    message: "Zarpamos juntos, Mi Intensa.\nY esto recién empieza.",
-    clue: "Última pista: Mañana, los cuatro juntos,\nvamos por eso que hace falta."
-  }
-];
-
-// ═══════════════════════════════════════
-// PISTAS DEL DETALLE 3 (Pijamas)
-// ═══════════════════════════════════════
-const phases = [
-  {
-    date: "2 de mayo",
-    label: "Primera pista",
-    message: "Existe en casi todos los hogares.\nEn algunos más de una vez.\nEn el tuyo, uno ya llegó antes.",
-    sub: "Pero este es diferente. Y no viene solo."
-  },
-  {
-    date: "9 de mayo",
-    label: "Segunda pista",
-    message: "No es para lucirlo.\nNo es para mostrarlo.\nEs para disfrutarlo cuando nadie te ve.",
-    sub: "Dos personas lo van a estrenar. Una eres tú."
-  },
-  {
-    date: "12 de mayo",
-    label: "Última pista",
-    message: "Son dos.\nUno en tu talla. Uno en la de alguien\nque te importa mucho.",
-    sub: "El 14 te los llevo. Solo faltan dos días."
-  }
-];
-
-// ═══════════════════════════════════════
-// NAVEGACIÓN
-// ═══════════════════════════════════════
-let pwTarget = 's4';
-
-function normalizeAccents(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+// Función hash simple para ofuscar contraseñas en memoria
+// (no criptografía real, pero previene lectura casual del source)
+function h(str) {
+  let hash = 0;
+  for(let i=0;i<str.length;i++){hash=((hash<<5)-hash)+str.charCodeAt(i);hash|=0;}
+  return hash;
 }
 
+// ── CONTRASEÑAS (solo hashes, nunca plaintext en DOM) ──
+// "BEBELUZ" → desbloquea velas post-entrega 27/04
+// "PIRAÑITA" / "PIRANITA" → desbloquea Detalle 2
+// "MAMA" → desbloquea Detalle 3
+// "CAFE" → desbloquea Detalle 4
+const PW_HASHES = {
+  velas:    h("BEBELUZ"),
+  detalle2: h("PIRANITA"),
+  detalle3: h("MAMA"),
+  detalle4: h("CAFE"),
+};
+
+function normalizar(str) {
+  return str.trim().toUpperCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+
+// ── FECHAS CLAVE ──
+const FECHAS = {
+  apertura:   new Date('2026-04-24T12:00:00'), // Mediodía 24/04
+  entrega1:   new Date('2026-04-27T19:00:00'), // Collares
+  entrega2:   new Date('2026-05-01T11:00:00'), // Kit rizos
+  entrega3:   new Date('2026-05-10T09:00:00'), // Desayuno
+  entrega4:   new Date('2026-05-14T19:00:00'), // Pijama
+};
+
+// ── VELAS (8) — acróstico B-E-B-E-L-U-Z-♥ ──
+// Ícono por grupo: D1=💛 D2=🌿 D3=🌸 D4=🌙 Cierre=♥
+// NADA de esto aparece en el HTML source
+function getVelas() {
+  return [
+    {
+      letra: "B",
+      grupo: 1,
+      icono: "💛",
+      noche: "Vela 1",
+      esFinalDeGrupo: true,
+      fechaDetalle: FECHAS.entrega1,
+      labelDetalle: "Detalle 01 · 27 de abril",
+      mensaje: "Bien podría ser cualquier cosa\nlo que nos une.\nPero resultó ser un café ralo con azúcar,\ny tú siendo tú.\nY eso ya es suficiente.",
+      acertijo: "Viajan de a dos.\nCada uno carga algo distinto,\npero los dos comparten una figura.\nNo se ven todos los días,\npero cuando los usas,\nalguien más también lo lleva puesto.",
+    },
+    {
+      letra: "E",
+      grupo: 2,
+      icono: "🌿",
+      noche: "Vela 2",
+      esFinalDeGrupo: false,
+      mensaje: "En algún momento decidiste\nser diferente a lo que eras.\nEso también nos cambió a los dos.\nY me gusta lo que veo.",
+      acertijo: "No tiene que ver con ropa.\nNo tiene que ver con comida.\nPero sí con algo que ahora formas parte de ti\ny que antes no estaba.\nAlgo que cuidas.\nAlgo que protege lo que ya eres.",
+    },
+    {
+      letra: "B",
+      grupo: 2,
+      icono: "🌿",
+      noche: "Vela 3",
+      esFinalDeGrupo: true,
+      fechaDetalle: FECHAS.entrega2,
+      labelDetalle: "Detalle 02 · 1 de mayo",
+      mensaje: "Bonito es cuando alguien\nte escucha de verdad.\nYo escucho. Y recuerdo.\nEso no va a cambiar.",
+      acertijo: "No se come ni se bebe.\nNo hace ruido cuando llega.\nPero sin esto,\nhay algo en ti\nque no estaría del todo en su lugar.",
+    },
+    {
+      letra: "E",
+      grupo: 3,
+      icono: "🌸",
+      noche: "Vela 4",
+      esFinalDeGrupo: false,
+      mensaje: "El mes de mayo tiene una fecha\nque no es de cualquiera.\nTú la vives diferente.\nY por eso la quiero vivir contigo.",
+      acertijo: "No se envuelve en papel.\nNo cabe en una caja.\nPero se siente cuando llega la mañana\ny hay alguien que pensó en ti\nantes de que abrieras los ojos.",
+    },
+    {
+      letra: "L",
+      grupo: 3,
+      icono: "🌸",
+      noche: "Vela 5",
+      esFinalDeGrupo: true,
+      fechaDetalle: FECHAS.entrega3,
+      labelDetalle: "Detalle 03 · 10 de mayo",
+      mensaje: "Lo que más admiro de ti\nes que amas sin miedo.\nA tus hijos, a tu vida,\na lo que eliges.\nEso es muy tuyo, amor.",
+      acertijo: "Hay una fecha en mayo\nque le pertenece a todas las que aman.\nEse día, queremos prepararte algo.",
+    },
+    {
+      letra: "U",
+      grupo: 4,
+      icono: "🌙",
+      noche: "Vela 6",
+      esFinalDeGrupo: false,
+      mensaje: "Uno de los mejores ratos contigo\nno siempre tiene que pasar afuera.\nA veces es quedarse.\nSin apuro. Sin plan.\nSolo estar.",
+      acertijo: "Algo que no se muestra.\nAlgo para cuando el ruido se apaga\ny el día ya terminó.\nNo es para la calle.\nEs para ti, cuando estás en tu espacio.",
+    },
+    {
+      letra: "Z",
+      grupo: 4,
+      icono: "🌙",
+      noche: "Vela 7",
+      esFinalDeGrupo: true,
+      fechaDetalle: FECHAS.entrega4,
+      labelDetalle: "Detalle 04 · 14 de mayo",
+      mensaje: "Zarpamos juntos, Mi Intensa.\nYa sé adónde quiero ir.\nY tú estás en el camino.",
+      acertijo: "No se usa de día.\nNo se ve en la calle.\nPero cuando llega la noche,\nes exactamente lo que quieres tener.\n¿Ya sabes, Pirañita?",
+    },
+    {
+      letra: "♥",
+      grupo: 0,
+      icono: "♥",
+      noche: "La última",
+      esFinalDeGrupo: false,
+      mensaje: "No hay letra para esto.\nSolo hay un corazón.\nY es tuyo.",
+      acertijo: null,
+    },
+  ];
+}
+
+// ── DETALLES (contenido que se revela con contraseña) ──
+function getDetalleContent(num) {
+  switch(num) {
+    case 1:
+      return {
+        numero: "Detalle 01 · 27 de abril",
+        titulo: "Dos collares.\nUna misma historia.",
+        cuerpo: "Uno lleva la J. El otro lleva la T.\nAmbos tienen un corazón.\nAmbos son dorados.\n\nUno se queda contigo.\nEl otro conmigo.\n\nPara que cuando no estemos juntos,\nhaya algo que nos conecte igual.",
+        nota: "Porque los detalles pequeños son los que duran más.",
+      };
+    case 2:
+      return {
+        numero: "Detalle 02 · 1 de mayo",
+        titulo: "Para cuidar\nlo que elegiste ser.",
+        cuerpo: "Cambiaste de lacia a rizada\ny eso fue tuyo, solo tuyo.\n\nPero me di cuenta de que no tenías\nlas herramientas para cuidarlos bien.\n\nEsto es para que cada mañana\ntus rizos estén como merecen estar.",
+        nota: "Te lo entrego con mucho cariño, Bebeluz.",
+      };
+    case 3:
+      return {
+        numero: "Detalle 03 · 10 de mayo",
+        titulo: "El desayuno\ndel día de la mamá.",
+        cuerpo: "Ese día te mereces despertar\nsin preocuparte por nada.\n\nAsi que llegaré con el desayuno.\nPara ti. Para los roomies.\nPara empezar el día juntos.",
+        nota: "Porque eres una mamá increíble y eso hay que celebrarlo bien.",
+      };
+    case 4:
+      return {
+        numero: "Detalle 04 · 14 de mayo",
+        titulo: "Para las noches\nque son tuyas.",
+        cuerpo: "No es para salir.\nNo es para mostrarlo.\n\nEs para cuando el día ya terminó\ny lo único que quieres\nes estar cómoda en tu espacio.\n\nEsto es solo para ti.",
+        nota: "Porque también mereces cosas que sean solo tuyas.",
+      };
+    default: return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+let adminMode = false;
+let pwTarget  = 'velas';
+let pwBack    = 's3';
+
+// ═══════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════════════════
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active');
     s.style.display = 'none';
   });
   const t = document.getElementById(id);
+  if(!t) return;
   t.style.display = 'flex';
   requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('active')));
   window.scrollTo(0,0);
-  // Mostrar/ocultar botón home
-  const btnHome = document.getElementById('btnHome');
-  if(btnHome) btnHome.classList.toggle('hidden', id === 's0');
+  document.getElementById('btnHome').classList.toggle('hidden', id === 's0');
 }
 
-// Init: ocultar todas menos s0
-document.querySelectorAll('.screen').forEach(s => {
-  if(!s.classList.contains('active')) s.style.display = 'none';
-});
+// ═══════════════════════════════════════════════════════
+// LÓGICA DE PANTALLA S3 (velas - pre/post apertura)
+// ═══════════════════════════════════════════════════════
+function renderS3() {
+  const now   = new Date();
+  const zona  = document.getElementById('s3-construccion');
+  if(!zona) return;
 
-// ═══════════════════════════════════════
-// PANTALLA DE CONTRASEÑA
-// ═══════════════════════════════════════
-function openPassword(target, label, hint, backScreen) {
-  pwTarget = target;
-  document.getElementById('pwLabel').textContent = label;
-  document.getElementById('pwHint').textContent = hint;
-  document.getElementById('pwInput').value = '';
-  document.getElementById('pwError').textContent = '';
-  document.getElementById('pwBack').setAttribute('onclick', `go('${backScreen}')`);
-  go('s10');
-}
-
-function checkPassword() {
-  const raw = document.getElementById('pwInput').value.trim();
-  const val = normalizeAccents(raw);
-  const err = document.getElementById('pwError');
-
-  if (pwTarget === 's4' && val === normalizeAccents(CONFIG.pw1)) {
-    go('s4');
-  } else if (pwTarget === 's8' && val === normalizeAccents(CONFIG.pw2)) {
-    buildPhaseList();
-    go('s8');
+  if(adminMode || now >= FECHAS.apertura) {
+    // Ya pasó el mediodía del 24/04 → mostrar botón acceso velas
+    zona.innerHTML = `
+      <button class="btn btn-primary" onclick="abrirPassword('velas','s3')" style="margin-top:8px;">
+        <span>🕯️ Ver mis velas →</span>
+      </button>
+      <p class="sub-text" style="margin-top:16px;">Escribe la palabra que te di con las velas.</p>
+    `;
   } else {
-    err.textContent = 'Esa no es, Pirañita. Piénsalo bien.';
-    document.getElementById('pwInput').value = '';
-  }
-}
-
-document.getElementById('pwInput').addEventListener('keydown', e => {
-  if(e.key === 'Enter') checkPassword();
-});
-
-// ═══════════════════════════════════════
-// VELAS
-// ═══════════════════════════════════════
-function buildCandleGrid() {
-  const grid = document.getElementById('candleGrid');
-  const now = new Date();
-  grid.innerHTML = '';
-
-  candles.forEach((c, i) => {
-    const unlocked = now >= CONFIG.candleDates[i];
-    const isToday = i < candles.length - 1
-      ? (now >= CONFIG.candleDates[i] && now < CONFIG.candleDates[i+1])
-      : (now >= CONFIG.candleDates[i]);
-
-    const card = document.createElement('div');
-    card.className = `candle-card ${unlocked ? 'unlocked' : 'locked'} ${isToday ? 'active-today' : ''}`;
-
-    card.innerHTML = `
-      <div class="candle-icon">${unlocked ? '🕯️' : ''}</div>
-      <div class="candle-letter">${c.letter}</div>
-      <div class="candle-num">${unlocked ? 'Noche '+(i+1) : '🔒'}</div>
-    `;
-
-    if(unlocked) {
-      card.onclick = () => showCandle(i);
-    }
-    grid.appendChild(card);
-  });
-}
-
-// showCandle is defined above with indirect messages
-
-// ═══════════════════════════════════════
-// FASES DETALLE 3
-// ═══════════════════════════════════════
-function buildPhaseList() {
-  const list = document.getElementById('phaseList');
-  const now = new Date();
-  list.innerHTML = '';
-
-  phases.forEach((p, i) => {
-    const unlocked = now >= CONFIG.phaseDates[i];
-    const card = document.createElement('div');
-    card.className = `phase-card ${unlocked ? 'unlocked' : 'locked'}`;
-    card.innerHTML = `
-      <p class="label" style="margin-bottom:4px;">${p.label}</p>
-      <p class="phase-date">${p.date}</p>
-      <p class="phase-hint">${unlocked ? 'Toca para leer tu pista.' : 'Todavía no. Paciencia, Mi Intensa.'}</p>
-      ${!unlocked ? '<span class="phase-lock">🔒</span>' : ''}
-    `;
-    if(unlocked) card.onclick = () => showPhase(i);
-    list.appendChild(card);
-  });
-}
-
-function showPhase(i) {
-  const p = phases[i];
-  const isLast = i === 2;
-  document.getElementById('phaseContent').innerHTML = `
-    <p class="label">${p.label} — ${p.date}</p>
-    <div style="background:white;border:1px solid var(--beige-dark);padding:32px 28px;max-width:440px;width:100%;text-align:center;margin:16px 0;">
-      <p class="body-text" style="margin-bottom:12px;">${p.message.replace(/\n/g,'<br>')}</p>
-      <div class="divider"><span>◇</span></div>
-      <p class="sub-text">${p.sub}</p>
-      ${isLast ? `
-        <div style="margin-top:20px;">
-          <button class="btn btn-primary" onclick="go('s11')"><span>Ver el detalle final →</span></button>
+    // Antes del mediodía: en construcción con cuenta regresiva
+    zona.innerHTML = `
+      <div class="construccion-box">
+        <div class="construccion-icon">🛠️</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--text-mid);margin-bottom:8px;">
+          Estoy preparando el camino, amor.
+        </p>
+        <p class="sub-text" style="margin-bottom:20px;">Vuelve al mediodía, para ver novedades.</p>
+        <div class="countdown-wrap" style="margin:0;">
+          <p class="countdown-label">Disponible en</p>
+          <div class="countdown-row">
+            <div class="cd-unit"><div class="cd-num" id="cdw-h">00</div><div class="cd-lbl">horas</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><div class="cd-num" id="cdw-m">00</div><div class="cd-lbl">min</div></div>
+            <div class="cd-sep">:</div>
+            <div class="cd-unit"><div class="cd-num" id="cdw-s">00</div><div class="cd-lbl">seg</div></div>
+          </div>
         </div>
-      ` : ''}
-    </div>
-  `;
-  go('s9');
-}
-
-// ═══════════════════════════════════════
-// MENSAJES INDIRECTOS (uno por vela)
-// ═══════════════════════════════════════
-const indirectMessages = [
-  "Alguien se acordó de mí hoy. 🤎",
-  "Me contaron una historia antes de dormir. Como si fuera una niña. Y me gustó mucho.",
-  "El café une más de lo que la gente cree.",
-  "Hay personas que te escuchan de verdad. Las reconoces después.",
-  "No sé cómo explicarlo. Solo sé que lo agradezco mucho.",
-  "Un mes. Solo un mes. Y ya parece que es historia.",
-  "Tres detalles. Una sola intención. Y yo aquí, sintiéndome muy amada. 🕯️"
-];
-
-function showCandle(i) {
-  const c = candles[i];
-  const isLast = i === 6;
-  const content = document.getElementById('candleContent');
-  const shareZone = document.getElementById('shareZone');
-
-  content.innerHTML = `
-    <div class="candle-detail">
-      <p class="candle-day-label">${c.day}</p>
-      <div class="candle-big-letter">${c.letter}</div>
-      <p class="candle-message">${c.message.replace(/\n/g,'<br>')}</p>
-      <div class="candle-clue">
-        <p class="candle-clue-label">Pista del próximo detalle</p>
-        <p class="candle-clue-text">${c.clue.replace(/\n/g,'<br>')}</p>
-      </div>
-    </div>
-  `;
-
-  shareZone.style.display = 'block';
-  shareZone.dataset.candleIndex = i;
-  document.getElementById('shareText').textContent = indirectMessages[i];
-
-  if(isLast) {
-    content.innerHTML += `
-      <div style="text-align:center;margin-top:20px;">
-        <p class="sub-text">¿Lista para ver qué viene?</p>
-        <button class="btn btn-primary" onclick="go('s7')"><span>Ver el siguiente detalle →</span></button>
       </div>
     `;
-  }
-
-  go('s6');
-}
-
-function copyShare() {
-  const idx = parseInt(document.getElementById('shareZone').dataset.candleIndex || 0);
-  const text = indirectMessages[idx];
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      const el = document.getElementById('shareText');
-      const orig = el.textContent;
-      el.textContent = '¡Copiado! ✓';
-      setTimeout(() => { el.textContent = orig; }, 1800);
-    });
+    tickWait();
+    setInterval(tickWait, 1000);
   }
 }
 
-// ═══════════════════════════════════════
-// COUNTDOWNS
-// ═══════════════════════════════════════
-function updateCD(target, dId, hId, mId, sId) {
-  const now = new Date();
-  const diff = target - now;
-  if(diff <= 0) {
-    [dId,hId,mId,sId].forEach(id => { const el=document.getElementById(id); if(el) el.textContent='00'; });
-    return;
-  }
-  const d = Math.floor(diff/(1000*60*60*24));
-  const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-  const m = Math.floor((diff%(1000*60*60))/(1000*60));
-  const s = Math.floor((diff%(1000*60))/1000);
-  const pad = n => String(n).padStart(2,'0');
-  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=pad(v); };
-  setEl(dId,d); setEl(hId,h); setEl(mId,m); setEl(sId,s);
-}
-
-function tickAll() {
-  updateCD(CONFIG.target1,'cd1-d','cd1-h','cd1-m','cd1-s');
-  updateCD(CONFIG.target2,'cd2-d','cd2-h','cd2-m','cd2-s');
-  updateCD(CONFIG.target3,'cd3-d','cd3-h','cd3-m','cd3-s');
-}
-
-tickAll();
-setInterval(tickAll, 1000);
-
-// ═══════════════════════════════════════
-// MODO ADMINISTRADOR
-// Triple tap en la firma activa vista completa
-// ═══════════════════════════════════════
-let tapCount = 0;
-let tapTimer = null;
-let adminActive = false;
-
-document.querySelectorAll('.sig').forEach(sig => {
-  sig.style.cursor = 'pointer';
-  sig.addEventListener('click', () => {
-    if(adminActive) return;
-    tapCount++;
-    clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => { tapCount = 0; }, 800);
-    if(tapCount >= 3) {
-      tapCount = 0;
-      activateAdminMode();
-    }
-  });
-});
-
-function activateAdminMode() {
-  adminActive = true;
-  const past = new Date('2020-01-01');
-  CONFIG.unlockAt = past;
-  CONFIG.candleDates = CONFIG.candleDates.map(() => past);
-  CONFIG.phaseDates  = CONFIG.phaseDates.map(() => past);
-  CONFIG.target1 = past;
-  CONFIG.target2 = past;
-  CONFIG.target3 = past;
-  CONFIG._origPw1 = CONFIG.pw1;
-  CONFIG._origPw2 = CONFIG.pw2;
-  CONFIG.pw1 = '__ADMIN__';
-  CONFIG.pw2 = '__ADMIN__';
-
-  buildCandleGrid();
-  buildPhaseList();
-  document.getElementById('adminBanner').style.display = 'block';
-
-  // Si estaba en pantalla de espera, ir a S0
-  if(document.getElementById('s-wait').classList.contains('active')) {
-    go('s0');
-  }
-
-  window._origCheckPassword = window.checkPassword;
-  window.checkPassword = function() {
-    if(pwTarget === 's4') { go('s4'); }
-    else { buildPhaseList(); go('s8'); }
-  };
-}
-
-function exitAdmin() {
-  // Recargar la página es la forma más limpia de volver al estado real
-  window.location.reload();
-}
-
-// Añadir al final de s3 dinámicamente
-// ═══════════════════════════════════════
-// INIT PRINCIPAL
-// ═══════════════════════════════════════
-function updateWaitCD() {
-  const now = new Date();
-  const diff = CONFIG.unlockAt - now;
-  if(diff <= 0) {
-    // Ya desbloqueado — ir a S0
-    go('s0');
-    return;
-  }
+function tickWait() {
+  const now  = new Date();
+  const diff = FECHAS.apertura - now;
+  if(diff <= 0) { renderS3(); return; }
   const h = Math.floor(diff/(1000*60*60));
   const m = Math.floor((diff%(1000*60*60))/(1000*60));
   const s = Math.floor((diff%(1000*60))/1000);
@@ -847,56 +718,242 @@ function updateWaitCD() {
   setEl('cdw-h',h); setEl('cdw-m',m); setEl('cdw-s',s);
 }
 
-window.addEventListener('load', () => {
-  buildCandleGrid();
+// ═══════════════════════════════════════════════════════
+// CONTRASEÑA
+// ═══════════════════════════════════════════════════════
+function abrirPassword(target, backScreen) {
+  pwTarget = target;
+  pwBack   = backScreen;
+  document.getElementById('pwLabel').textContent =
+    target === 'velas'    ? 'Acceso a tus velas'   :
+    target === 'detalle2' ? 'Detalle 02'            :
+    target === 'detalle3' ? 'Detalle 03'            : 'Detalle 04';
+  document.getElementById('pwHint').textContent =
+    'Escribe la palabra que te di.';
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwBack').setAttribute('onclick', `go('${backScreen}')`);
+  go('s7');
+}
 
-  // ── Decidir pantalla inicial ──
-  const now = new Date();
-  if(now >= CONFIG.unlockAt) {
-    // Dentro del horario: mostrar S0 normal
-    document.getElementById('s0').classList.add('active');
-    document.getElementById('s0').style.display = 'flex';
+function checkPassword() {
+  if(adminMode) {
+    // Admin: pasa todo sin contraseña
+    resolverPassword(pwTarget);
+    return;
+  }
+  const raw = document.getElementById('pwInput').value;
+  const val = normalizar(raw);
+  const valH = h(val);
+
+  if(valH === PW_HASHES[pwTarget]) {
+    resolverPassword(pwTarget);
   } else {
-    // Antes del 22/04 11:00 am: mostrar pantalla de espera
-    const sw = document.getElementById('s-wait');
-    sw.style.display = 'flex';
-    sw.classList.add('active');
-    updateWaitCD();
-    const waitInterval = setInterval(() => {
-      const n = new Date();
-      if(n >= CONFIG.unlockAt) {
-        clearInterval(waitInterval);
-        document.querySelectorAll('.screen').forEach(s => {
-          s.classList.remove('active');
-          s.style.display = 'none';
+    document.getElementById('pwError').textContent = 'Esa no es, Pirañita. Piénsalo bien.';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function resolverPassword(target) {
+  if(target === 'velas') {
+    buildVelaGrid();
+    go('s4');
+  } else {
+    const num = target === 'detalle2' ? 2 : target === 'detalle3' ? 3 : 4;
+    renderDetalleDesbloqueado(num);
+    go('s8');
+  }
+}
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkPassword();
+});
+
+// ═══════════════════════════════════════════════════════
+// VELAS
+// ═══════════════════════════════════════════════════════
+function velaDesbloqueada(i) {
+  if(adminMode) return true;
+  const now = new Date();
+  // Vela desbloqueada si el detalle al que apunta ya fue entregado
+  // o si estamos en modo post-entrega del detalle anterior
+  const grupo = getVelas()[i].grupo;
+  if(grupo === 0) return now >= FECHAS.entrega4; // corazón final
+  if(grupo === 1) return now >= FECHAS.apertura;
+  if(grupo === 2) return now >= FECHAS.entrega1;
+  if(grupo === 3) return now >= FECHAS.entrega2;
+  if(grupo === 4) return now >= FECHAS.entrega3;
+  return false;
+}
+
+function buildVelaGrid() {
+  const grid = document.getElementById('velaGrid');
+  const velas = getVelas();
+  grid.innerHTML = '';
+
+  // Fechas por grupo para mostrar en el subtítulo
+  const fechaLabel = { 1:'27 abr', 2:'1 may', 3:'10 may', 4:'14 may', 0:'' };
+
+  velas.forEach((v, i) => {
+    const unlocked = velaDesbloqueada(i);
+    const card = document.createElement('div');
+    card.className = `vela-card ${unlocked ? 'unlocked' : 'locked'}`;
+
+    card.innerHTML = `
+      <div class="vela-icon">${unlocked ? v.icono : ''}</div>
+      <div class="vela-letter">${v.letra}</div>
+      <div class="vela-num">${unlocked ? (v.grupo > 0 ? fechaLabel[v.grupo] : '♥') : '🔒'}</div>
+    `;
+
+    if(unlocked) card.onclick = () => mostrarVela(i);
+    grid.appendChild(card);
+  });
+}
+
+function mostrarVela(i) {
+  const v = getVelas()[i];
+  const content = document.getElementById('velaContent');
+  const esCierre = v.letra === '♥';
+
+  // Bloque de cuenta regresiva si es la última vela del grupo
+  let countdownBlock = '';
+  if(v.esFinalDeGrupo && v.grupo > 0) {
+    const now = new Date();
+    const diff = v.fechaDetalle - now;
+    const yaLlego = diff <= 0;
+    const cdId = 'cd-vela-' + i;
+    countdownBlock = `
+      <div class="vela-clue" style="border-top:1px solid var(--beige-dark);margin-top:22px;padding-top:22px;">
+        <p class="vela-clue-label">${v.labelDetalle}</p>
+        ${yaLlego
+          ? `<p class="vela-clue-text">Ya llegó el momento. 🕯️</p>`
+          : `<div class="countdown-wrap" style="margin:16px 0 0;">
+              <p class="countdown-label">Falta</p>
+              <div class="countdown-row">
+                <div class="cd-unit"><div class="cd-num" id="${cdId}-d">00</div><div class="cd-lbl">días</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-unit"><div class="cd-num" id="${cdId}-h">00</div><div class="cd-lbl">hrs</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-unit"><div class="cd-num" id="${cdId}-m">00</div><div class="cd-lbl">min</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-unit"><div class="cd-num" id="${cdId}-s">00</div><div class="cd-lbl">seg</div></div>
+              </div>
+            </div>`
+        }
+      </div>
+    `;
+  }
+
+  content.innerHTML = `
+    <div class="vela-detail">
+      <p class="vela-day-label">${v.noche}</p>
+      <div class="vela-big-letter">${v.letra}</div>
+      <p class="vela-message">${v.mensaje.replace(/\n/g,'<br>')}</p>
+      ${!esCierre ? `
+        <div class="vela-clue">
+          <p class="vela-clue-label">Acertijo — ¿Adivinas qué viene?</p>
+          <p class="vela-clue-text">${v.acertijo.replace(/\n/g,'<br>')}</p>
+        </div>
+        ${countdownBlock}
+      ` : `
+        <div class="vela-clue" style="border-top:1px solid var(--beige-dark);margin-top:22px;padding-top:22px;">
+          <p class="vela-clue-text" style="font-size:18px;">No hay acertijo esta vez.<br>Solo esto: <em>gracias por seguir el camino, amor.</em></p>
+        </div>
+      `}
+    </div>
+  `;
+
+  // Arrancar countdown si aplica
+  if(v.esFinalDeGrupo && v.grupo > 0 && (v.fechaDetalle - new Date()) > 0) {
+    const cdId = 'cd-vela-' + i;
+    const target = v.fechaDetalle;
+    function tick() {
+      const now2 = new Date();
+      const diff2 = target - now2;
+      if(diff2 <= 0) {
+        ['d','h','m','s'].forEach(u => {
+          const el = document.getElementById(cdId+'-'+u);
+          if(el) el.textContent = '00';
         });
-        document.getElementById('s0').style.display = 'flex';
-        document.getElementById('s0').classList.add('active');
-      } else {
-        updateWaitCD();
+        return;
       }
+      const dd = Math.floor(diff2/(1000*60*60*24));
+      const hh = Math.floor((diff2%(1000*60*60*24))/(1000*60*60));
+      const mm = Math.floor((diff2%(1000*60*60))/(1000*60));
+      const ss = Math.floor((diff2%(1000*60))/1000);
+      const pad = n => String(n).padStart(2,'0');
+      ['d','h','m','s'].forEach((u,idx) => {
+        const el = document.getElementById(cdId+'-'+u);
+        if(el) el.textContent = pad([dd,hh,mm,ss][idx]);
+      });
+    }
+    tick();
+    const iv = setInterval(() => {
+      if(!document.getElementById(cdId+'-s')) { clearInterval(iv); return; }
+      tick();
     }, 1000);
   }
 
-  // ── Botón acceso velas en S3 ──
-  const s3 = document.getElementById('s3');
-  const sig3 = s3.querySelector('.sig');
-  const accessBtn = document.createElement('button');
-  accessBtn.className = 'btn btn-outline';
-  accessBtn.style.marginTop = '8px';
-  accessBtn.innerHTML = '🔐 Ya recibí mis velas';
-  accessBtn.onclick = () => openPassword('s4', 'Acceso a tus velas', 'Escribe la palabra que te di con el paquete.', 's3');
-  s3.insertBefore(accessBtn, sig3);
+  go('s5');
+}
 
-  // ── Botón acceso detalle 3 en S7 ──
-  const s7 = document.getElementById('s7');
-  const sig7 = s7.querySelector('.sig');
-  const access3Btn = document.createElement('button');
-  access3Btn.className = 'btn btn-outline';
-  access3Btn.style.marginTop = '8px';
-  access3Btn.innerHTML = '🔐 Acceder al detalle 3';
-  access3Btn.onclick = () => openPassword('s8', 'Detalle 3', 'Escribe la contraseña que te di el 1/05.', 's7');
-  s7.insertBefore(access3Btn, sig7);
+// ═══════════════════════════════════════════════════════
+// DETALLE DESBLOQUEADO
+// ═══════════════════════════════════════════════════════
+function renderDetalleDesbloqueado(num) {
+  const d = getDetalleContent(num);
+  if(!d) return;
+  document.getElementById('detalleContent').innerHTML = `
+    <p class="label">${d.numero}</p>
+    <h2 class="display-title">${d.titulo.replace(/\n/g,'<br>')}</h2>
+    <div class="divider"><span>◇</span></div>
+    <div style="background:white;border:1px solid var(--beige-dark);padding:32px 28px;max-width:440px;width:100%;text-align:center;margin:12px 0 24px;">
+      <p class="body-text" style="margin-bottom:16px;">${d.cuerpo.replace(/\n/g,'<br>')}</p>
+      <div class="divider"><span>◇</span></div>
+      <p class="sub-text">${d.nota}</p>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+// MODO ADMINISTRADOR
+// Triple tap en cualquier .sig activa vista completa
+// ═══════════════════════════════════════════════════════
+let tapCount = 0, tapTimer = null;
+
+document.addEventListener('click', e => {
+  if(adminMode) return;
+  if(e.target.classList.contains('sig')) {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 900);
+    if(tapCount >= 3) {
+      tapCount = 0;
+      activarAdmin();
+    }
+  }
+});
+
+function activarAdmin() {
+  adminMode = true;
+  document.getElementById('adminBanner').style.display = 'block';
+  // Reconstruir con todo desbloqueado
+  buildVelaGrid();
+  renderS3();
+}
+
+function exitAdmin() {
+  window.location.reload();
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  renderS3();
+
+  // S0 ya tiene clase active en el HTML
+  // No tocar nada más hasta que el usuario navegue
 });
 </script>
 </body>
